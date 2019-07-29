@@ -269,8 +269,8 @@ namespace POLE
     {
     public:
         Storage* storage;         // owner
-        unsigned char *filedata;
-        unsigned long dataLength;
+	std::string filename;     // filename
+	std::fstream file;        // associated with above name
         int result;               // result of operation
         bool opened;              // true if file is opened
         unsigned long filesize;   // size of the file
@@ -284,7 +284,7 @@ namespace POLE
         
         std::list<Stream*> streams;
         
-        StorageIO( Storage* storage, char* bytes, unsigned long length );
+        StorageIO(Storage* st, const std::string& filename);
         ~StorageIO();
         
         bool open();

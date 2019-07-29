@@ -622,7 +622,7 @@ void DirTree::debug()
 
 // =========== StorageIO ==========
 
-StorageIO::StorageIO( Storage* st, const char* fname ):
+StorageIO::StorageIO( Storage* st, const std::string& fname ):
 storage( st ),
 filename( fname ),
 file(),
