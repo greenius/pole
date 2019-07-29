@@ -1,1 +1,5 @@
 poledump
+.depend
+*.o
+msginfo
+pole.xcworkspace/xcuserdata

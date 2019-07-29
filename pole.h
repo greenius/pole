@@ -56,7 +56,7 @@ namespace POLE
         /**
          * Constructs a storage with name filename.
          **/
-        Storage( const char* filename );
+        Storage( const std::string& filename );
         
         /**
          * Destroys the storage.
@@ -104,7 +104,8 @@ namespace POLE
          * You do not need to delete the created stream, it will be handled
          * automatically.
          **/
-        Stream* stream( const std::string& name, bool reuse = true );
+//-- There is no implementation of this!
+        //Stream* stream( const std::string& name, bool reuse = true );
         //Stream* stream( const std::string& name, int mode = Stream::ReadOnly, bool reuse = true );
         
     private:
