@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1222F08C2F0069EDAD /* pole.cpp */; };
 		B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1322F08C2F0069EDAD /* msginfo.cpp */; };
+		B05ABA2622F09EA80069EDAD /* MapiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA2422F09EA80069EDAD /* MapiMessage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +28,10 @@
 		B05ABA1222F08C2F0069EDAD /* pole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pole.cpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1322F08C2F0069EDAD /* msginfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msginfo.cpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1422F08C2F0069EDAD /* pole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pole.h; sourceTree = SOURCE_ROOT; };
+		B05ABA1722F09B900069EDAD /* mapitags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mapitags.h; sourceTree = SOURCE_ROOT; };
+		B05ABA1822F09B900069EDAD /* mapidefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mapidefs.h; sourceTree = SOURCE_ROOT; };
+		B05ABA2422F09EA80069EDAD /* MapiMessage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MapiMessage.cpp; path = poleview/MapiMessage.cpp; sourceTree = SOURCE_ROOT; };
+		B05ABA2522F09EA80069EDAD /* MapiMessage.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = MapiMessage.hpp; path = poleview/MapiMessage.hpp; sourceTree = SOURCE_ROOT; };
 		B0C4214E22EF6E5A0007BA60 /* MsgInfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MsgInfo; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -62,9 +67,13 @@
 		B0C4215022EF6E5A0007BA60 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B05ABA1822F09B900069EDAD /* mapidefs.h */,
+				B05ABA1722F09B900069EDAD /* mapitags.h */,
 				B05ABA1322F08C2F0069EDAD /* msginfo.cpp */,
 				B05ABA1222F08C2F0069EDAD /* pole.cpp */,
 				B05ABA1422F08C2F0069EDAD /* pole.h */,
+				B05ABA2422F09EA80069EDAD /* MapiMessage.cpp */,
+				B05ABA2522F09EA80069EDAD /* MapiMessage.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -126,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */,
+				B05ABA2622F09EA80069EDAD /* MapiMessage.cpp in Sources */,
 				B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
