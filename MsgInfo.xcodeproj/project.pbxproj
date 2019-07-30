@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B0C4215A22EF6E820007BA60 /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C4215822EF6E810007BA60 /* pole.cpp */; };
-		B0C4215B22EF6E820007BA60 /* msginfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C4215922EF6E810007BA60 /* msginfo.cpp */; };
+		B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1222F08C2F0069EDAD /* pole.cpp */; };
+		B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1322F08C2F0069EDAD /* msginfo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +24,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B05ABA1222F08C2F0069EDAD /* pole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pole.cpp; sourceTree = SOURCE_ROOT; };
+		B05ABA1322F08C2F0069EDAD /* msginfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msginfo.cpp; sourceTree = SOURCE_ROOT; };
+		B05ABA1422F08C2F0069EDAD /* pole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pole.h; sourceTree = SOURCE_ROOT; };
 		B0C4214E22EF6E5A0007BA60 /* MsgInfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MsgInfo; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0C4215822EF6E810007BA60 /* pole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pole.cpp; path = ../../../pole.cpp; sourceTree = "<group>"; };
-		B0C4215922EF6E810007BA60 /* msginfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = msginfo.cpp; path = ../../../msginfo.cpp; sourceTree = "<group>"; };
-		B0C4215C22EF6ECF0007BA60 /* pole.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pole.h; path = /Users/steven/src/pole/XCode/MsgInfo/MsgInfo/pole.h; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,10 +44,12 @@
 		B0C4214522EF6E5A0007BA60 = {
 			isa = PBXGroup;
 			children = (
-				B0C4215022EF6E5A0007BA60 /* MsgInfo */,
+				B0C4215022EF6E5A0007BA60 /* src */,
 				B0C4214F22EF6E5A0007BA60 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		B0C4214F22EF6E5A0007BA60 /* Products */ = {
 			isa = PBXGroup;
@@ -57,14 +59,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B0C4215022EF6E5A0007BA60 /* MsgInfo */ = {
+		B0C4215022EF6E5A0007BA60 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				B0C4215922EF6E810007BA60 /* msginfo.cpp */,
-				B0C4215822EF6E810007BA60 /* pole.cpp */,
-				B0C4215C22EF6ECF0007BA60 /* pole.h */,
+				B05ABA1322F08C2F0069EDAD /* msginfo.cpp */,
+				B05ABA1222F08C2F0069EDAD /* pole.cpp */,
+				B05ABA1422F08C2F0069EDAD /* pole.h */,
 			);
-			path = MsgInfo;
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -123,8 +125,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0C4215A22EF6E820007BA60 /* pole.cpp in Sources */,
-				B0C4215B22EF6E820007BA60 /* msginfo.cpp in Sources */,
+				B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */,
+				B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,7 +178,6 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
@@ -228,7 +229,6 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;

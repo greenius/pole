@@ -1,5 +1,6 @@
 poledump
 .depend
-*.o
+**/*.o
 msginfo
-pole.xcworkspace/xcuserdata
+**/xcuserdata
+.DS_Store
