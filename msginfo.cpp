@@ -25,7 +25,7 @@ void showInfo(POLE::Storage* store, const std::string& path)
     // for(auto child: store->dirTree()->children(index))
     for(auto child: store->entries(path))
     {
-      showInfo(store, path + "/" + child);
+      showInfo(store, path + child + "/");
     }
   }
   else
