@@ -1,17 +1,17 @@
 CC=gcc
 CXX=g++
 RM=rm -f
-CPPFLAGS=-std=c++11
+CPPFLAGS=-std=c++14
 LDFLAGS=
 LDLIBS=
 
-SRCS=pole.cpp msginfo.cpp poledump.cpp
+SRCS=pole.cpp msginfo.cpp poledump.cpp MapiMessage.cpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 EXES=msginfo poledump
 
 all: $(EXES)
 
-msginfo: msginfo.o pole.o
+msginfo: msginfo.o pole.o MapiMessage.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
 
 poledump: poledump.o pole.o

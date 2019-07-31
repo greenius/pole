@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1222F08C2F0069EDAD /* pole.cpp */; };
 		B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1322F08C2F0069EDAD /* msginfo.cpp */; };
-		B05ABA2622F09EA80069EDAD /* MapiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA2422F09EA80069EDAD /* MapiMessage.cpp */; };
+		B094F02F22F1ED5E00C6E735 /* MapiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,8 +30,14 @@
 		B05ABA1422F08C2F0069EDAD /* pole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pole.h; sourceTree = SOURCE_ROOT; };
 		B05ABA1722F09B900069EDAD /* mapitags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mapitags.h; sourceTree = SOURCE_ROOT; };
 		B05ABA1822F09B900069EDAD /* mapidefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mapidefs.h; sourceTree = SOURCE_ROOT; };
-		B05ABA2422F09EA80069EDAD /* MapiMessage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MapiMessage.cpp; path = poleview/MapiMessage.cpp; sourceTree = SOURCE_ROOT; };
-		B05ABA2522F09EA80069EDAD /* MapiMessage.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = MapiMessage.hpp; path = poleview/MapiMessage.hpp; sourceTree = SOURCE_ROOT; };
+		B094F02622F1ED0000C6E735 /* AUTHORS */ = {isa = PBXFileReference; lastKnownFileType = text; path = AUTHORS; sourceTree = SOURCE_ROOT; };
+		B094F02722F1ED0000C6E735 /* COMPILERS.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = COMPILERS.txt; sourceTree = SOURCE_ROOT; };
+		B094F02822F1ED0000C6E735 /* ChangeLog */ = {isa = PBXFileReference; lastKnownFileType = text; path = ChangeLog; sourceTree = SOURCE_ROOT; };
+		B094F02922F1ED0000C6E735 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = SOURCE_ROOT; };
+		B094F02A22F1ED0000C6E735 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = SOURCE_ROOT; };
+		B094F02B22F1ED0000C6E735 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = SOURCE_ROOT; };
+		B094F02D22F1ED5E00C6E735 /* MapiMessage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MapiMessage.hpp; sourceTree = SOURCE_ROOT; };
+		B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MapiMessage.cpp; sourceTree = SOURCE_ROOT; };
 		B0C4214E22EF6E5A0007BA60 /* MsgInfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MsgInfo; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -46,15 +52,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B094F02522F1ECC300C6E735 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				B094F02622F1ED0000C6E735 /* AUTHORS */,
+				B094F02822F1ED0000C6E735 /* ChangeLog */,
+				B094F02722F1ED0000C6E735 /* COMPILERS.txt */,
+				B094F02922F1ED0000C6E735 /* LICENSE */,
+				B094F02B22F1ED0000C6E735 /* Makefile */,
+				B094F02A22F1ED0000C6E735 /* README */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		B0C4214522EF6E5A0007BA60 = {
 			isa = PBXGroup;
 			children = (
+				B094F02522F1ECC300C6E735 /* Support */,
 				B0C4215022EF6E5A0007BA60 /* src */,
 				B0C4214F22EF6E5A0007BA60 /* Products */,
 			);
-			indentWidth = 4;
+			indentWidth = 2;
 			sourceTree = "<group>";
-			tabWidth = 4;
+			tabWidth = 2;
 		};
 		B0C4214F22EF6E5A0007BA60 /* Products */ = {
 			isa = PBXGroup;
@@ -67,13 +87,13 @@
 		B0C4215022EF6E5A0007BA60 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */,
+				B094F02D22F1ED5E00C6E735 /* MapiMessage.hpp */,
 				B05ABA1822F09B900069EDAD /* mapidefs.h */,
 				B05ABA1722F09B900069EDAD /* mapitags.h */,
 				B05ABA1322F08C2F0069EDAD /* msginfo.cpp */,
 				B05ABA1222F08C2F0069EDAD /* pole.cpp */,
 				B05ABA1422F08C2F0069EDAD /* pole.h */,
-				B05ABA2422F09EA80069EDAD /* MapiMessage.cpp */,
-				B05ABA2522F09EA80069EDAD /* MapiMessage.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -104,7 +124,7 @@
 		B0C4214622EF6E5A0007BA60 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = "Greenius Limited";
 				TargetAttributes = {
 					B0C4214D22EF6E5A0007BA60 = {
@@ -118,6 +138,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = B0C4214522EF6E5A0007BA60;
 			productRefGroup = B0C4214F22EF6E5A0007BA60 /* Products */;
@@ -135,7 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */,
-				B05ABA2622F09EA80069EDAD /* MapiMessage.cpp in Sources */,
+				B094F02F22F1ED5E00C6E735 /* MapiMessage.cpp in Sources */,
 				B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
