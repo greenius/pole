@@ -543,9 +543,10 @@ std::string DirTree::fullName( unsigned index )
       result.insert( 0,  _entry->name);
       result.insert( 0,  "/" );
     }
-    --p;
-    index = p;
-    if( index <= 0 ) break;
+    p = parent(p);
+//    --p;
+//    index = p;
+//    if( index <= 0 ) break;
   }
   return result;
 }

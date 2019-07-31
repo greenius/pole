@@ -11,11 +11,17 @@
 #ifndef MAPIDEFS_H
 #define MAPIDEFS_H
 
-#if 0 // Remove unused stuff
+/* Only include the bits we need for the MapiMessage parsing
+ * which is built cross platform so doesnt have access to all the
+ * window types
+ */
+#define ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 #if _MSC_VER > 1000
 #pragma once
 #endif
+
+#ifndef ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 #if defined (WIN64) && !defined (_WIN64)
 #define _WIN64
@@ -256,6 +262,7 @@ typedef struct _MAPIUID
 #define cchProfilePassMax	64
 #endif
 
+#endif // ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 /* Property Types */
 
@@ -363,6 +370,8 @@ typedef struct _MAPIUID
 #define MV_INSTANCE		0x2000
 #define MVI_FLAG		(MV_FLAG | MV_INSTANCE)
 #define MVI_PROP(tag)	((tag) | MVI_FLAG)
+
+#ifndef ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 /* --------------- */
 /* Data Structures */
@@ -2729,7 +2738,7 @@ DECLARE_MAPI_INTERFACE_(IMAPIProviderShutdown, IUnknown)
 }		/*	extern "C" */
 #endif
 
-#endif // Unused stuff
+#endif // ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 #endif /* MAPIDEFS_H */
 
