@@ -18,7 +18,8 @@
 
 namespace POLE
 {
-    class Storage;
+  class Storage;
+  class Stream;
 }
 
 
@@ -51,6 +52,10 @@ private:
     Message(const Message&);
 
   void parse();
+  std::vector<uint8_t> getBinaryData(const std::string& path, uint32_t proptag, size_t length);
+  std::string getString8(const std::string& path, uint32_t proptag, size_t length);
+  std::u16string getString16(const std::string& path, uint32_t proptag, size_t length);
+  std::unique_ptr<POLE::Stream> openStream(const std::string& path);
 
 private:
     std::shared_ptr<POLE::Storage> m_storage;

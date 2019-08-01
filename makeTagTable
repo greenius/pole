@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Create a useful table from the tags defined in metatags.h
+
+# For each line:
+#   #define PR_<tagname> PROP_TAG(PT_Type, tagvalue)
+#
+# Create an entry as part of a map of [tagvalue] => { name, type }
+#   { tagvalue, "tagname", tagtype }
+# or a simple map [PR_Tagname] => "name"
+#   { PR_tagname, "tagname" }
+
+IN=mapitags.h
+OUTBASE=mapitagnames
+OUT_CPP=${OUTBASE}.cpp
+OUT_H=${OUTBASE}.h
+NAMESPACE=MapiMessage
+
+#---------------------------------------
+# Write the header file
+cat > $OUT_H <<EOF
+/* 
+ * Do not edit:
+ *   Generated automatically by $0 from $IN
+ */
+#ifndef ${OUTBASE}_H
+#define ${OUTBASE}_H
+
+#include <map>
+#include <string>
+
+namespace $NAMESPACE {
+
+extern std::map<uint64_t, std::string> mapiTagNames;
+
+} // End namespace
+#endif
+EOF
+#---------------------------------------
+
+#---------------------------------------
+# Start the CPP file
+
+cat > $OUT_CPP <<EOF
+/* 
+ * Do not edit:
+ *   Generated automatically by $0 from $IN
+ */
+#include "$OUT_H"
+#include "mapiExtraDefs.h"
+#include "mapidefs.h"
+#include "$IN"
+
+namespace $NAMESPACE {
+
+std::map<uint64_t, std::string> mapiTagNames{
+EOF
+#---------------------------------------
+
+sed >> $OUT_CPP -E -n 's/^#define[[:space:]]+((PR_)([A-Z_]+))[[:space:]]+.*$/  { \1, "\3" },/p' $IN
+
+#---------------------------------------
+# end of CPP file
+cat >> $OUT_CPP <<EOF
+  { 0, "" } /* Dummy item at the end to avoid trailing comma error */
+};
+
+} // End of namespace
+EOF
+#---------------------------------------

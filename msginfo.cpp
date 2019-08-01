@@ -75,6 +75,12 @@ void showMsgFile(const std::string& filename)
   showInfo(storage, "/");
 }
 
+void showMsgInfo(const std::string& filename)
+{
+  auto message = MapiMessage::Message::createFromFile(filename);
+  // This just lets the Trace messages show stuff for now...
+}
+
 void showHeaders(const std::string& filename)
 {
   auto message = MapiMessage::Message::createFromFile(filename);
@@ -91,6 +97,7 @@ void usage()
   std::cout << "Usage: msginfo [options] filenames...\n"
   << "Options\n"
   << "\t-h --headers: Show Headers\n"
+  << "\t-i --info: Show information"
   << "\t-d --dump: Dump data\n";
 }
 
@@ -101,8 +108,11 @@ int main(int argc, char* argv[])
     usage();
   }
 
+  bool gotAction = false;
+
   bool actionShowHeaders = false;
   bool actionDumpData = false;
+  bool actionInfo = false;
 
 
   std::vector<std::string> filenames;
@@ -113,10 +123,17 @@ int main(int argc, char* argv[])
     if( (arg == "-h") || (arg == "--headers"))
     {
       actionShowHeaders = true;
+      gotAction = true;
     }
     else if((arg == "-d") || (arg == "--dump"))
     {
       actionDumpData = true;
+      gotAction = true;
+    }
+    else if((arg == "-i") || (arg == "--info"))
+    {
+      actionInfo = true;
+      gotAction = true;
     }
     else
     {
@@ -124,7 +141,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  if(!actionShowHeaders && !actionDumpData)
+  if(!gotAction)
   {
     actionDumpData = true;
   }
@@ -138,6 +155,11 @@ int main(int argc, char* argv[])
   for(auto fname: filenames)
   {
     std::cout << "Reading " << fname << std::endl;
+
+    if(actionInfo)
+    {
+      showMsgInfo(fname);
+    }
 
     if(actionDumpData)
     {

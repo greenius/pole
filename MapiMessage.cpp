@@ -8,46 +8,20 @@
 
 #include "MapiMessage.hpp"
 
-/* Stuff to make mapidefs.h and mapitags.h work */
-#if 0
-typedef unsigned char BYTE;
-typedef unsigned long ULONG;
-typedef long LONG;
-typedef ULONG* ULONG_PTR;
-typedef unsigned short DWORD;
-typedef void* LPVOID;
-typedef long long LARGE_INTEGER;
-typedef char* LPSTR;
-typedef wchar_t WCHAR;
-typedef ULONG SCODE;
-#define STDMETHODCALLTYPE
-#define STDAPICALLTYPE
-#define interface class
-typedef ULONG HRESULT;
-
-// Dont know what these are, sp ojust set the to int to keep compiler happy
-typedef int CY;
-typedef int GUID;
-typedef int IID;
-
-typedef GUID* LPGUID;
-typedef LPVOID IUnknown;
-typedef LPVOID IMAPIAdviseSink;
-
-#define FAR
-
-#endif
-
 #include "mapiExtraDefs.h"
 #include "mapidefs.h"
 #include "mapitags.h"
+#include "mapitagnames.h"
 #include "pole.h"
 
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <chrono>
+#include <codecvt>
 
+
+namespace {
 #ifndef Trace
 
 class IosStateSaver {
@@ -72,7 +46,37 @@ private:
 };
 
 #define Trace(s) { IosStateSaver state(std::cout); std::cout << s << std::endl; }
+
+std::string hexdump(const std::vector<uint8_t> data)
+{
+  const int lineWidth = 16;
+  int index = 0;
+
+  std::ostringstream hexbuf;
+  // hexbuf << std::setfill('0') << std::hex << std::setw(2);
+  for(auto b: data)
+  {
+    if((index %lineWidth) == 0)
+    {
+      if(index != 0)
+      {
+        hexbuf << "\n";
+      }
+    }
+    else
+    {
+      hexbuf << " ";
+    }
+    hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) b;
+    ++index;
+  }
+  return hexbuf.str();
+}
+
+
 #endif
+} // local namespace
+
 
 namespace MapiMessage {
 
@@ -175,7 +179,9 @@ namespace MapiMessage {
 
 
 
-  static const std::string StreamName_Properties_Version = "__properties_version1.0";
+  static const std::string StreamName_Properties_Version{"__properties_version1.0"};
+  static const std::string StreamName_PropertyData{"__substg1.0_"};
+
 
   std::unique_ptr<Message> Message::createFromFile(const std::string& filename)
   {
@@ -205,136 +211,201 @@ namespace MapiMessage {
     return m_headerMap;
   }
 
+  std::unique_ptr<POLE::Stream> Message::openStream(const std::string& path)
+  {
+    // Note this is C++14 only... check that CentOS G++ can build this
+    // and change if neccessary.
+    auto propStream = std::make_unique<POLE::Stream>(m_storage.get(), path);
+    if(propStream->fail())
+    {
+      throw std::runtime_error("Failed to open stream " + path);
+    }
+    return propStream;
+  }
 
   void Message::parse()
   {
     // Get the top level properties information
+    std::string path{"/"};
+    StreamReader reader(openStream(path + StreamName_Properties_Version));
+//    auto propStream = std::make_unique<POLE::Stream>(m_storage.get(), path + StreamName_Properties_Version);
+//    if(propStream->fail())
+//    {
+//      throw std::runtime_error("Failed to open stream " + propStream->fullName());
+//    }
+//    StreamReader reader(std::move(propStream));
 
-    auto propStream = std::make_unique<POLE::Stream>(m_storage.get(), "/" + StreamName_Properties_Version);
-    if(!propStream->fail())
+    unsigned long size = reader.size();
+    Trace(reader.fullName() << ", " << size << " bytes");
+
+    reader.skip(8);
+    unsigned long nextRecipientID = reader.readU32();
+    unsigned long nextAttachmentID = reader.readU32();
+    unsigned long recipientCount = reader.readU32();
+    unsigned long attachentCount = reader.readU32();
+    reader.skip(8);
+
+    Trace("Recipients=" << recipientCount);
+    Trace("Attachments=" << attachentCount);
+    Trace("Next Recipients=" << nextRecipientID);
+    Trace("Next Attachments=" << nextAttachmentID);
+
+    int nItems = (size - reader.tell()) / 16;
+    for(int i = 0; (i < nItems) && !reader.fail(); ++i)
     {
-      StreamReader reader(std::move(propStream));
+      Trace("Item: " << i);
+      unsigned char itemBytes[16];
+      reader.read(itemBytes, sizeof(itemBytes));
 
-      unsigned long size = reader.size();
-      Trace(reader.fullName() << ", " << size << " bytes");
+      //        unsigned short propType = bytesToU16(itemBytes);
+      //        unsigned short propTag = bytesToU16(itemBytes + 2);
+      unsigned long propTag = bytesToU32(itemBytes);
+      unsigned long flags = bytesToU32(itemBytes+4);
 
-      reader.skip(8);
-      unsigned long nextRecipientID = reader.readU32();
-      unsigned long nextAttachmentID = reader.readU32();
-      unsigned long recipientCount = reader.readU32();
-      unsigned long attachentCount = reader.readU32();
-      reader.skip(8);
+      // The other 8 bytes depend on the type...
+      unsigned short propType = PROP_TYPE(propTag);
+      unsigned short propID = PROP_ID(propTag);
 
-      Trace("Recipients=" << recipientCount);
-      Trace("Attachments=" << attachentCount);
-      Trace("Next Recipients=" << nextRecipientID);
-      Trace("Next Attachments=" << nextAttachmentID);
+      auto tagNameIt = MapiMessage::mapiTagNames.find(propTag);
+      std::string tagName = (tagNameIt == MapiMessage::mapiTagNames.end()) ? "?" : tagNameIt->second;
 
-      int nItems = (size - reader.tell()) / 16;
-      for(int i = 0; (i < nItems) && !reader.fail(); ++i)
+
+      std::ostringstream hexbuf;
+      hexbuf << "0x";
+      for(int b = 8; b < 16; ++b)
       {
-        Trace("Item: " << i);
-        unsigned char itemBytes[16];
-        reader.read(itemBytes, sizeof(itemBytes));
-
-//        unsigned short propType = bytesToU16(itemBytes);
-//        unsigned short propTag = bytesToU16(itemBytes + 2);
-        unsigned long propTag = bytesToU32(itemBytes);
-        unsigned long flags = bytesToU32(itemBytes+4);
-
-        // The other 8 bytes depend on the type...
-        unsigned short propType = PROP_TYPE(propTag);
-        unsigned short propID = PROP_ID(propTag);
-
-
-        std::ostringstream hexbuf;
-        hexbuf << "0x";
-        for(int b = 8; b < 16; ++b)
-        {
-          hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) itemBytes[b];
-        }
-        Trace("proptype=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propType
-        << ", proptag=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propID
-        << ", flags=0x" << std::setfill('0') << std::hex << std::setw(8) << flags
-        << ", Data=" << hexbuf.str());
-
-        if(flags & PROPATTR_READABLE)
-        {
-          // Process....
-
-          switch(propType)
-          {
-            case PT_SHORT:
-            {
-              unsigned short v = bytesToU16(itemBytes + 8);
-              Trace("I2: " << (unsigned int) v);
-              break;
-            }
-            case PT_LONG:
-            {
-              unsigned long v = bytesToU32(itemBytes + 8);
-              Trace("I4: " << v);
-              break;
-            }
-            case PT_FLOAT:
-            {
-              float v = bytesToFloat32(itemBytes + 8);
-              Trace("R4: " << v);
-              break;
-            }
-            case PT_DOUBLE:
-            {
-              double v = bytesToFloat64(itemBytes + 8);
-              Trace("R4: " << v);
-              break;
-            }
-            case PT_BOOLEAN:
-            {
-              bool v = bytesToBool(itemBytes + 8);
-              Trace("Bool: " << v);
-              break;
-            }
-            case PT_UNICODE:
-            {
-              // TODO... Variable UTF16
-              Trace("UNICODE... TODO, size=" << bytesToU32(itemBytes + 8));
-              break;
-            }
-            case PT_STRING8:
-            {
-              // TODO... Variable UTF8
-              Trace("STRING8... TODO, size=" << bytesToU32(itemBytes + 8));
-              break;
-            }
-            case PT_SYSTIME:
-            {
-              /* 8 bytes; a 64-bit integer representing the number of
-               * 100-nanosecond intervals since January 1, 1601
-               */
-              uint64_t v = bytesToU64(itemBytes + 8);
-              auto date = ptSystimeToSystemClock(v);
-              time_t t = std::chrono::system_clock::to_time_t(date);
-              auto dateStr = std::put_time(std::localtime(&t), "%F %T");
-              Trace("SYSTIME: " << dateStr);
-              break;
-            }
-            case PT_BINARY:
-            {
-              Trace("BINARY... TODO, size=" << bytesToU32(itemBytes + 8));
-              break;
-            }
-            default:
-            {
-              Trace("Unknown property type " << propType);
-              break;
-            }
-          }
-
-
-        }
-
+        hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) itemBytes[b];
       }
+      Trace("proptype=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propType
+            << ", proptag=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propID
+            << ", tagname=" << tagName
+            << ", flags=0x" << std::setfill('0') << std::hex << std::setw(8) << flags
+            << ", Data=" << hexbuf.str());
 
+      if(flags & PROPATTR_READABLE)
+      {
+        // Process....
+
+        switch(propType)
+        {
+          case PT_SHORT:
+          {
+            unsigned short v = bytesToU16(itemBytes + 8);
+            Trace("I2: " << (unsigned int) v);
+            break;
+          }
+          case PT_LONG:
+          {
+            unsigned long v = bytesToU32(itemBytes + 8);
+            Trace("I4: " << v);
+            break;
+          }
+          case PT_FLOAT:
+          {
+            float v = bytesToFloat32(itemBytes + 8);
+            Trace("R4: " << v);
+            break;
+          }
+          case PT_DOUBLE:
+          {
+            double v = bytesToFloat64(itemBytes + 8);
+            Trace("R4: " << v);
+            break;
+          }
+          case PT_BOOLEAN:
+          {
+            bool v = bytesToBool(itemBytes + 8);
+            Trace("Bool: " << v);
+            break;
+          }
+          case PT_SYSTIME:
+          {
+            /* 8 bytes; a 64-bit integer representing the number of
+             * 100-nanosecond intervals since January 1, 1601
+             */
+            uint64_t v = bytesToU64(itemBytes + 8);
+            auto date = ptSystimeToSystemClock(v);
+            time_t t = std::chrono::system_clock::to_time_t(date);
+            auto dateStr = std::put_time(std::localtime(&t), "%F %T");
+            Trace("SYSTIME: " << dateStr);
+            break;
+          }
+          case PT_BINARY:
+          {
+            // Trace("BINARY... TODO, size=" << bytesToU32(itemBytes + 8));
+            std::vector<uint8_t> v = getBinaryData(path, propTag, bytesToU32(itemBytes + 8));
+            Trace("BINARY:\n" << hexdump(v));
+            break;
+          }
+          case PT_UNICODE:
+          {
+            // Variable UTF16
+            // Note the length is +2 for null termination
+            std::u16string v16 = getString16(path, propTag, bytesToU32(itemBytes + 8));
+            std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> stringConverter;
+            std::string v8 = stringConverter.to_bytes(v16);
+            Trace("UNICODE16: " << v8);
+            break;
+          }
+          case PT_STRING8:
+          {
+            // Variable UTF8
+            // Note the length is +1 for null termination
+            std::string v = getString8(path, propTag, bytesToU32(itemBytes + 8));
+            Trace("STRING8: " << v);
+            break;
+          }
+          default:
+          {
+            Trace("Unknown property type " << propType);
+            break;
+          }
+        }
+      } // switch(propType)
+    } // READABLE
+  } // ::parse()
+
+
+  std::vector<uint8_t> Message::getBinaryData(const std::string& path, uint32_t proptag, size_t length)
+  {
+    std::ostringstream streamName;
+    streamName << path;
+    if(path.empty() || (path.back() != '/'))
+    {
+      streamName << "/";
     }
+    streamName << StreamName_PropertyData
+    << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << proptag;
+
+    auto stream = openStream(streamName.str());
+
+    std::vector<uint8_t> result(length);
+    auto count = stream->read(result.data(), length);
+    if(count != length)
+    {
+      std::ostringstream msg;
+      msg << "Error reading from stream " << streamName.str() << ", wanted=" << length << ", result=" << count;
+      throw std::runtime_error(msg.str());
+    }
+    return result;
   }
-}
+
+  /* Note length is +1 for null */
+  std::string Message::getString8(const std::string& path, uint32_t proptag, size_t length)
+  {
+    auto bytes = getBinaryData(path, proptag, length-1);
+    const char* chars = reinterpret_cast<const char*>(bytes.data());
+    return std::string(chars, bytes.size());
+  }
+
+  /* Note lenth is +2 for null */
+  std::u16string Message::getString16(const std::string& path, uint32_t proptag, size_t length)
+  {
+    auto bytes = getBinaryData(path, proptag, length-2);
+    // Assume correct endian
+    const char16_t* chars = reinterpret_cast<char16_t*>(bytes.data());
+    return std::u16string(chars, bytes.size() / sizeof(char16_t));
+  }
+
+
+} // namespace

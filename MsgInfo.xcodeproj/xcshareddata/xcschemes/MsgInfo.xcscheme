@@ -68,8 +68,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-d"
+            argument = "-i"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-d"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "testfiles/plain_jpeg_attached.msg"

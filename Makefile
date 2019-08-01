@@ -5,13 +5,14 @@ CPPFLAGS=-std=c++14
 LDFLAGS=
 LDLIBS=
 
-SRCS=pole.cpp msginfo.cpp poledump.cpp MapiMessage.cpp
+# SRCS=pole.cpp msginfo.cpp poledump.cpp MapiMessage.cpp
+SRCS=$(wildcard *.cpp)
 OBJS=$(subst .cpp,.o,$(SRCS))
 EXES=msginfo poledump
 
 all: $(EXES)
 
-msginfo: msginfo.o pole.o MapiMessage.o
+msginfo: msginfo.o pole.o MapiMessage.o mapitagnames.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
 
 poledump: poledump.o pole.o
