@@ -75,19 +75,40 @@ std::string hexdump(const std::vector<uint8_t> data)
 
 
 #endif
+
+  std::string convert_utf16Toutf8(const std::u16string& src)
+  {
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> stringConverter;
+    return stringConverter.to_bytes(src);
+  }
+
+
 } // local namespace
 
 
 namespace MapiMessage {
 
-  inline unsigned short bytesToU16(const unsigned char* buffer)
+  inline uint16_t bytesToU16(const unsigned char* buffer)
   {
     return buffer[0] + (buffer[1] << 8);
   }
 
-  inline unsigned long bytesToU32(const unsigned char* buffer)
+  inline uint32_t bytesToU32(const unsigned char* buffer)
   {
+#if 0
+    unsigned long result = buffer[3];
+    for(int i = 2; i-- > 0;)
+    {
+      unsigned char b = buffer[i];
+      result <<= 8;
+      result += b;
+    }
+    return result;
+#else
+    // Not reliable when top bit is set and unsigned long is 64 bits
+    // Fine if use uint32_t
     return buffer[0] + (buffer[1] << 8) + (buffer[2] << 16) + (buffer[3] << 24);
+#endif
   }
 
   inline std::uint64_t bytesToU64(const unsigned char* buffer)
@@ -172,6 +193,35 @@ namespace MapiMessage {
     }
 
     size_t tell() const { return m_stream->tell(); }
+    void seek(size_t pos) { m_stream->seek(pos); }
+
+    std::string readString8(size_t length)
+    {
+      std::vector<uint8_t> bytes(length);
+      auto count = read(bytes.data(), length);
+      if(count != length)
+      {
+        std::ostringstream msg;
+        msg << "Error reading from stream " << m_stream->fullName() << ", wanted=" << length << ", result=" << count;
+        throw std::runtime_error(msg.str());
+      }
+      const char* chars = reinterpret_cast<const char*>(bytes.data());
+      return std::string(chars, bytes.size());
+    }
+
+    std::u16string readString16(size_t length)
+    {
+      std::vector<uint8_t> bytes(length);
+      auto count = read(bytes.data(), length);
+      if(count != length)
+      {
+        std::ostringstream msg;
+        msg << "Error reading from stream " << m_stream->fullName() << ", wanted=" << length << ", result=" << count;
+        throw std::runtime_error(msg.str());
+      }
+      const char16_t* chars = reinterpret_cast<const char16_t*>(bytes.data());
+      return std::u16string(chars, bytes.size() / sizeof(char16_t));
+    }
 
   private:
     std::unique_ptr<POLE::Stream> m_stream;
@@ -181,6 +231,7 @@ namespace MapiMessage {
 
   static const std::string StreamName_Properties_Version{"__properties_version1.0"};
   static const std::string StreamName_PropertyData{"__substg1.0_"};
+  static const std::string StreamName_NamedProperties{"__nameid_version1.0"};
 
 
   std::unique_ptr<Message> Message::createFromFile(const std::string& filename)
@@ -203,7 +254,7 @@ namespace MapiMessage {
 
   Message::~Message()
   {
-    Trace("Destruct Message");
+    // Trace("Destruct Message");
   }
 
   Message::HeaderMap Message::getHeaders() const
@@ -224,6 +275,79 @@ namespace MapiMessage {
   }
 
   void Message::parse()
+  {
+    parseNamedProperties();
+    parseProperties();
+  }
+
+  void Message::parseNamedProperties()
+  {
+    // See Section 2.2.3 of [MC-OXMSG]
+    // Open the String Stream so we can refer to it later
+    std::string path{"/" + StreamName_NamedProperties};
+    StreamReader stringReader(openStream(path + "/" + StreamName_PropertyData+"00040102"));
+
+    // Open the Entry Stream
+    StreamReader entryReader(openStream(path + "/" +  StreamName_PropertyData+"00030102"));
+    int nEntries = entryReader.size() / 8;
+    for(int entryIndex = 0; entryIndex < nEntries; ++entryIndex)
+    {
+      auto idOrOffset = entryReader.readU32();
+      auto indexAndKind = entryReader.readU32();
+
+      bool isString = indexAndKind & 1;
+      int guidIndex = indexAndKind >> 1;
+
+      uint16_t propertyID = 0x8000 + entryIndex;
+
+      std::string name;
+      if(isString)
+      {
+        stringReader.seek(idOrOffset);
+        size_t length = stringReader.readU32();
+        std::u16string name16 = stringReader.readString16(length);
+        name = convert_utf16Toutf8(name16);
+      }
+      else
+      {
+        // Not sure what these mean...
+        // MS-OXMSG Secion 2.2.3.1.2 says:
+        // this value is the LID part of the PropertyName structure, as specified in [MS-OXCDATA] section 2.6.1.
+
+        // Many of these are defined in [MS-OXPROPS]
+        // GUID is something like: PSETID_Common {00062008-0000-0000-C000-000000000046}
+        // LID is the idOrOffset
+        // Can not find header file with them in...
+        // eg. Common / 00008580 = PidLidInternetAccountName or dispidInetAcctName
+
+        // If we were on Windows could use:
+        // IMAPIProp::GetNamesFromIDs()
+        // https://docs.microsoft.com/en-us/office/client-developer/outlook/mapi/imapiprop-getnamesfromids
+        // Maybe we could have Windows command line tool that generates a source
+        // file for us.
+
+        auto lidIt = namedTagNames.find(idOrOffset);
+        if(lidIt != namedTagNames.end())
+        {
+          name = lidIt->second;
+        }
+        else
+        {
+          std::ostringstream nameStr;
+          nameStr << "LID_" << std::hex << std::setw(8) << std::setfill('0') << idOrOffset;
+          name = nameStr.str();
+        }
+      }
+
+      m_namedProperties[propertyID] = name;
+      Trace("Named Property: ["
+            << std::hex << std::setfill('0') << std::setw(4) << propertyID
+            << "]="
+            << name);
+    }
+  }
+
+  void Message::parseProperties()
   {
     // Get the top level properties information
     std::string path{"/"};
@@ -253,7 +377,7 @@ namespace MapiMessage {
     int nItems = (size - reader.tell()) / 16;
     for(int i = 0; (i < nItems) && !reader.fail(); ++i)
     {
-      Trace("Item: " << i);
+      // Trace("Item: " << i);
       unsigned char itemBytes[16];
       reader.read(itemBytes, sizeof(itemBytes));
 
@@ -267,8 +391,25 @@ namespace MapiMessage {
       unsigned short propID = PROP_ID(propTag);
 
       auto tagNameIt = MapiMessage::mapiTagNames.find(propTag);
-      std::string tagName = (tagNameIt == MapiMessage::mapiTagNames.end()) ? "?" : tagNameIt->second;
-
+      std::string tagName;
+      if(tagNameIt != MapiMessage::mapiTagNames.end())
+      {
+        tagName = tagNameIt->second;
+      }
+      else
+      {
+        auto namedPropertyIt = m_namedProperties.find(propID);
+        if(namedPropertyIt != m_namedProperties.end())
+        {
+          tagName = namedPropertyIt->second;
+        }
+        else
+        {
+          std::ostringstream tagidStr;
+          tagidStr << "UNKNOWN_" << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << propTag;
+          tagName = tagidStr.str();
+        }
+      }
 
       std::ostringstream hexbuf;
       hexbuf << "0x";
@@ -276,11 +417,11 @@ namespace MapiMessage {
       {
         hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) itemBytes[b];
       }
-      Trace("proptype=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propType
-            << ", proptag=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propID
-            << ", tagname=" << tagName
-            << ", flags=0x" << std::setfill('0') << std::hex << std::setw(8) << flags
-            << ", Data=" << hexbuf.str());
+//      Trace("proptype=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propType
+//            << ", proptag=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propID
+//            << ", tagname=" << tagName
+//            << ", flags=0x" << std::setfill('0') << std::hex << std::setw(8) << flags
+//            << ", Data=" << hexbuf.str());
 
       if(flags & PROPATTR_READABLE)
       {
@@ -291,31 +432,31 @@ namespace MapiMessage {
           case PT_SHORT:
           {
             unsigned short v = bytesToU16(itemBytes + 8);
-            Trace("I2: " << (unsigned int) v);
+            Trace(tagName << "=" << (unsigned int) v << " (I2)");
             break;
           }
           case PT_LONG:
           {
             unsigned long v = bytesToU32(itemBytes + 8);
-            Trace("I4: " << v);
+            Trace(tagName << "=" << v << " (I4)");
             break;
           }
           case PT_FLOAT:
           {
             float v = bytesToFloat32(itemBytes + 8);
-            Trace("R4: " << v);
+            Trace(tagName << "="<< v << "(R4)");
             break;
           }
           case PT_DOUBLE:
           {
             double v = bytesToFloat64(itemBytes + 8);
-            Trace("R4: " << v);
+            Trace(tagName << "=" << v << " (R4)");
             break;
           }
           case PT_BOOLEAN:
           {
             bool v = bytesToBool(itemBytes + 8);
-            Trace("Bool: " << v);
+            Trace(tagName << "=" << (v ? "true" : "false") << " (Bool)");
             break;
           }
           case PT_SYSTIME:
@@ -327,14 +468,14 @@ namespace MapiMessage {
             auto date = ptSystimeToSystemClock(v);
             time_t t = std::chrono::system_clock::to_time_t(date);
             auto dateStr = std::put_time(std::localtime(&t), "%F %T");
-            Trace("SYSTIME: " << dateStr);
+            Trace(tagName << "=" << dateStr << " (SYSTIME)");
             break;
           }
           case PT_BINARY:
           {
             // Trace("BINARY... TODO, size=" << bytesToU32(itemBytes + 8));
             std::vector<uint8_t> v = getBinaryData(path, propTag, bytesToU32(itemBytes + 8));
-            Trace("BINARY:\n" << hexdump(v));
+            Trace(tagName << "=" << "BINARY: " << v.size() << " bytes\n" << hexdump(v));
             break;
           }
           case PT_UNICODE:
@@ -344,7 +485,7 @@ namespace MapiMessage {
             std::u16string v16 = getString16(path, propTag, bytesToU32(itemBytes + 8));
             std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> stringConverter;
             std::string v8 = stringConverter.to_bytes(v16);
-            Trace("UNICODE16: " << v8);
+            Trace(tagName << "=\"" << v8 << "\" (UNICODE16)");
             break;
           }
           case PT_STRING8:
@@ -352,12 +493,12 @@ namespace MapiMessage {
             // Variable UTF8
             // Note the length is +1 for null termination
             std::string v = getString8(path, propTag, bytesToU32(itemBytes + 8));
-            Trace("STRING8: " << v);
+            Trace(tagName << "=\"" << v << "\" (STRING8)");
             break;
           }
           default:
           {
-            Trace("Unknown property type " << propType);
+            Trace(tagName << "=" << "Unknown property type " << propType);
             break;
           }
         }

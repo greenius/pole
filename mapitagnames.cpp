@@ -1,6 +1,6 @@
 /* 
  * Do not edit:
- *   Generated automatically by ./makeTagTable from mapitags.h
+ *   Generated automatically by ./makeTagTable from mapitags.h and mapiExtraDefs.h
  */
 #include "mapitagnames.h"
 #include "mapiExtraDefs.h"
@@ -745,6 +745,69 @@ std::map<uint64_t, std::string> mapiTagNames{
   { PR_YPOS, "YPOS" },
   { PR_CONTROL_ID, "CONTROL_ID" },
   { PR_INITIAL_DETAILS_PANE, "INITIAL_DETAILS_PANE" },
+  { 0, "" } /* Dummy item at the end to avoid trailing comma error */
+};
+
+std::map<uint32_t, std::string> namedTagNames{
+  { 0x0026, "MeetingType" },
+  { 0x8005, "FileUnder" },
+  { 0x802C, "YomiFirstName" },
+  { 0x802D, "YomiLastName" },
+  { 0x802E, "YomiCompanyName" },
+  { 0x8045, "WorkAddressStreet" },
+  { 0x8046, "WorkAddressCity" },
+  { 0x8047, "WorkAddressState" },
+  { 0x8048, "WorkAddressPostalCode" },
+  { 0x8049, "WorkAddressCountry" },
+  { 0x804A, "WorkAddressPostOfficeBox" },
+  { 0x8062, "InstMsg" },
+  { 0x8080, "EmailDisplayName" },
+  { 0x8082, "EmailAddrType" },
+  { 0x8083, "EmailEmailAddress" },
+  { 0x8084, "EmailOriginalDisplayName" },
+  { 0x8101, "TaskStatus" },
+  { 0x8104, "TaskStartDate" },
+  { 0x8105, "TaskDueDate" },
+  { 0x8110, "TaskActualEffort" },
+  { 0x8111, "TaskEstimatedEffort" },
+  { 0x8126, "TaskFRecur" },
+  { 0x8205, "BusyStatus" },
+  { 0x8208, "Location" },
+  { 0x820D, "ApptStartWhole" },
+  { 0x820E, "ApptEndWhole" },
+  { 0x8213, "ApptDuration" },
+  { 0x8223, "Recurring" },
+  { 0x8233, "TimeZoneStruct" },
+  { 0x8238, "AllAttendeesString" },
+  { 0x823B, "ToAttendeesString" },
+  { 0x823C, "CCAttendeesString" },
+  { 0x8240, "ConfCheck" },
+  { 0x8257, "ApptCounterProposal" },
+  { 0x825E, "ApptTZDefStartDisplay" },
+  { 0x825F, "ApptTZDefEndDisplay" },
+  { 0x8260, "ApptTZDefRecur" },
+  { 0x8502, "ReminderTime" },
+  { 0x8503, "ReminderSet" },
+  { 0x850F, "FormStorage" },
+  { 0x8513, "PageDirStream" },
+  { 0x8514, "SmartNoAttach" },
+  { 0x8516, "CommonStart" },
+  { 0x8517, "CommonEnd" },
+  { 0x851B, "FormPropStream" },
+  { 0x8530, "Request" },
+  { 0x8539, "Companies" },
+  { 0x853A, "Contacts" },
+  { 0x8540, "PropDefStream" },
+  { 0x8541, "ScriptStream" },
+  { 0x8542, "CustomFlag" },
+  { 0x8560, "ReminderNextTime" },
+  { 0x8578, "HeaderItem" },
+  { 0x8582, "UseTNEF" },
+  { 0x85A4, "ToDoTitle" },
+  { 0x8700, "LogType" },
+  { 0x8706, "LogStart" },
+  { 0x8707, "LogDuration" },
+  { 0x8708, "LogEnd" },
   { 0, "" } /* Dummy item at the end to avoid trailing comma error */
 };
 

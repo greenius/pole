@@ -1,6 +1,6 @@
 /* 
  * Do not edit:
- *   Generated automatically by ./makeTagTable from mapitags.h
+ *   Generated automatically by ./makeTagTable from mapitags.h and mapiExtraDefs.h
  */
 #ifndef mapitagnames_H
 #define mapitagnames_H
@@ -11,6 +11,7 @@
 namespace MapiMessage {
 
 extern std::map<uint64_t, std::string> mapiTagNames;
+extern std::map<uint32_t, std::string> namedTagNames; // LID Id to tag name
 
 } // End namespace
 #endif

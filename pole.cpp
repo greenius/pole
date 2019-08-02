@@ -213,12 +213,13 @@ using namespace POLE;
 
 static inline unsigned long readU16( const unsigned char* ptr )
 {
-  return ptr[0]+(ptr[1]<<8);
+  return (ptr[0]+(ptr[1]<<8)) & 0xffff;
 }
 
 static inline unsigned long readU32( const unsigned char* ptr )
 {
-  return ptr[0]+(ptr[1]<<8)+(ptr[2]<<16)+(ptr[3]<<24);
+  // Note if top bit is set and unsigned long is 64 bits then it is filled with ffffffff so and the final result
+  return (ptr[0]+(ptr[1]<<8)+(ptr[2]<<16)+(ptr[3]<<24)) & 0xffffffff;
 }
 
 static inline void writeU16( unsigned char* ptr, unsigned long data )
