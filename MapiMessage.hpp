@@ -25,6 +25,8 @@ namespace POLE
 
 namespace MapiMessage {
 
+  class StreamReader;
+
   struct Recipient
   {
     std::wstring emailAddress;
@@ -54,6 +56,14 @@ private:
   void parse();
   void parseProperties();
   void parseNamedProperties();
+  void parseRecipients();
+  void parseAttachments();
+
+  void parseRecipient(int i);
+  void parseAttachment(int i);
+  void parsePropertyData(StreamReader& reader, const std::string& path);
+
+
   std::vector<uint8_t> getBinaryData(const std::string& path, uint32_t proptag, size_t length);
   std::string getString8(const std::string& path, uint32_t proptag, size_t length);
   std::u16string getString16(const std::string& path, uint32_t proptag, size_t length);
@@ -66,6 +76,10 @@ private:
   std::vector<std::unique_ptr<Recipient>> m_recipients;
   std::vector<std::unique_ptr<Attachment>> m_attachments;
   HeaderMap m_headerMap;
+
+  uint32_t m_recipientCount;
+  uint32_t m_attachmentCount;
+
 };
 
 }

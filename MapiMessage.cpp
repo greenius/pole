@@ -22,6 +22,9 @@
 
 
 namespace {
+
+#pragma mark Debugging
+
 #ifndef Trace
 
 class IosStateSaver {
@@ -76,6 +79,8 @@ std::string hexdump(const std::vector<uint8_t> data)
 
 #endif
 
+#pragma mark Utility functions
+
   std::string convert_utf16Toutf8(const std::u16string& src)
   {
     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> stringConverter;
@@ -87,6 +92,8 @@ std::string hexdump(const std::vector<uint8_t> data)
 
 
 namespace MapiMessage {
+
+#pragma mark MapMessage non member functioms
 
   inline uint16_t bytesToU16(const unsigned char* buffer)
   {
@@ -152,6 +159,8 @@ namespace MapiMessage {
     return system_clock::time_point{
       duration_cast<system_clock::duration>(withUnixEpoch)};
   }
+
+#pragma mark StreamReader
 
   class StreamReader
   {
@@ -227,12 +236,16 @@ namespace MapiMessage {
     std::unique_ptr<POLE::Stream> m_stream;
   };
 
-
+#pragma mark Constants
 
   static const std::string StreamName_Properties_Version{"__properties_version1.0"};
   static const std::string StreamName_PropertyData{"__substg1.0_"};
   static const std::string StreamName_NamedProperties{"__nameid_version1.0"};
+  static const std::string StreamName_Recipient{"__recip_version1.0"};
+  static const std::string StreamName_Attachment{"__attach_version1.0"};
 
+
+#pragma mark Message class implementation
 
   std::unique_ptr<Message> Message::createFromFile(const std::string& filename)
   {
@@ -248,7 +261,13 @@ namespace MapiMessage {
 
 
   Message::Message(std::shared_ptr<POLE::Storage> storage) :
-  m_storage(storage)
+  m_storage(storage),
+  m_namedProperties(),
+  m_recipients(),
+  m_attachments(),
+  m_headerMap(),
+  m_recipientCount(0),
+  m_attachmentCount(0)
   {
   }
 
@@ -278,6 +297,48 @@ namespace MapiMessage {
   {
     parseNamedProperties();
     parseProperties();
+
+    parseRecipients();
+    parseAttachments();
+  }
+
+  void Message::parseRecipients()
+  {
+    for(int i = 0; i < m_recipientCount; ++i)
+    {
+      parseRecipient(i);
+    }
+  }
+
+  void Message::parseRecipient(int i)
+  {
+    Trace("Recipient " << i);
+
+    std::ostringstream pathStr;
+    pathStr << "/" << StreamName_Recipient << "_#" << std::hex << std::setfill('0') << std::setw(8) << i;
+
+    std::string propertyStreamName = pathStr.str() + "/" + StreamName_Properties_Version;
+    StreamReader reader(openStream(propertyStreamName));
+
+    // Reserved 8 byte header
+    reader.skip(8);
+
+    parsePropertyData(reader, pathStr.str());
+
+  }
+
+  void Message::parseAttachments()
+  {
+    for(int i = 0; i < m_attachmentCount; ++i)
+    {
+      parseAttachment(i);
+    }
+  }
+
+  void Message::parseAttachment(int i)
+  {
+    Trace("Attachment " << i);
+
   }
 
   void Message::parseNamedProperties()
@@ -365,24 +426,27 @@ namespace MapiMessage {
     reader.skip(8);
     unsigned long nextRecipientID = reader.readU32();
     unsigned long nextAttachmentID = reader.readU32();
-    unsigned long recipientCount = reader.readU32();
-    unsigned long attachentCount = reader.readU32();
+    m_recipientCount = reader.readU32();
+    m_attachmentCount = reader.readU32();
     reader.skip(8);
 
-    Trace("Recipients=" << recipientCount);
-    Trace("Attachments=" << attachentCount);
-    Trace("Next Recipients=" << nextRecipientID);
-    Trace("Next Attachments=" << nextAttachmentID);
+    Trace("Recipients=" << m_recipientCount);
+    Trace("Attachments=" << m_attachmentCount);
+    Trace("Next RecipientID=" << nextRecipientID);
+    Trace("Next AttachmentID=" << nextAttachmentID);
 
-    int nItems = (size - reader.tell()) / 16;
+    parsePropertyData(reader, path);
+  }
+
+  void Message::parsePropertyData(StreamReader& reader, const std::string& path)
+  {
+    int nItems = (reader.size() - reader.tell()) / 16;
     for(int i = 0; (i < nItems) && !reader.fail(); ++i)
     {
       // Trace("Item: " << i);
       unsigned char itemBytes[16];
       reader.read(itemBytes, sizeof(itemBytes));
 
-      //        unsigned short propType = bytesToU16(itemBytes);
-      //        unsigned short propTag = bytesToU16(itemBytes + 2);
       unsigned long propTag = bytesToU32(itemBytes);
       unsigned long flags = bytesToU32(itemBytes+4);
 

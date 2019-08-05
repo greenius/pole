@@ -97,7 +97,7 @@ void usage()
   std::cout << "Usage: msginfo [options] filenames...\n"
   << "Options\n"
   << "\t-h --headers: Show Headers\n"
-  << "\t-i --info: Show information"
+  << "\t-i --info: Show information\n"
   << "\t-d --dump: Dump data\n";
 }
 
@@ -106,6 +106,7 @@ int main(int argc, char* argv[])
   if(argc < 2)
   {
     usage();
+    return 1;
   }
 
   bool gotAction = false;
@@ -134,6 +135,11 @@ int main(int argc, char* argv[])
     {
       actionInfo = true;
       gotAction = true;
+    }
+    else if(arg[0] == '-')
+    {
+      usage();
+      return 1;
     }
     else
     {
