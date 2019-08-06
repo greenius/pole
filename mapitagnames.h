@@ -1,6 +1,6 @@
 /* 
  * Do not edit:
- *   Generated automatically by ./makeTagTable from mapitags.h and mapiExtraDefs.h
+ *   Generated automatically by ./makeTagTable from mapitags.h and mapiExtraDefs.h and ms-oxprops.h
  */
 #ifndef mapitagnames_H
 #define mapitagnames_H

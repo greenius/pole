@@ -17,13 +17,14 @@ OUT_H=${OUTBASE}.h
 NAMESPACE=MapiMessage
 
 IN_LID=mapiExtraDefs.h
+IN_MSPROPS=ms-oxprops.h
 
 #---------------------------------------
 # Write the header file
 cat > $OUT_H <<EOF
 /* 
  * Do not edit:
- *   Generated automatically by $0 from $IN and $IN_LID
+ *   Generated automatically by $0 from $IN and $IN_LID and ${IN_MSPROPS}
  */
 #ifndef ${OUTBASE}_H
 #define ${OUTBASE}_H
@@ -53,6 +54,7 @@ cat > $OUT_CPP <<EOF
 #include "mapiExtraDefs.h"
 #include "mapidefs.h"
 #include "$IN"
+#include "$IN_MSPROPS"
 
 namespace $NAMESPACE {
 
@@ -61,6 +63,8 @@ EOF
 #---------------------------------------
 
 sed >> $OUT_CPP -E -n 's/^#define[[:space:]]+((PR_)([A-Z_]+))[[:space:]]+.*$/  { \1, "\3" },/p' $IN
+echo >> $OUT_CPP "/* From ${IN_MSPROPS} */"
+sed >> $OUT_CPP -E -n 's/^#define[[:space:]]+((PR_|LID_)?([A-Za-z_]+))[[:space:]]+.*$/  { \1, "\3" },/p' ${IN_MSPROPS}
 
 #---------------------------------------
 # end of map
