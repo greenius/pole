@@ -339,6 +339,18 @@ namespace MapiMessage {
   {
     Trace("Attachment " << i);
 
+    std::ostringstream pathStr;
+    pathStr << "/" << StreamName_Attachment << "_#" << std::hex << std::setfill('0') << std::setw(8) << i;
+
+    std::string propertyStreamName = pathStr.str() + "/" + StreamName_Properties_Version;
+    StreamReader reader(openStream(propertyStreamName));
+
+    // Reserved 8 byte header
+    reader.skip(8);
+
+    parsePropertyData(reader, pathStr.str());
+
+    // Attachment is in stream __substg1.0_3701000D
   }
 
   void Message::parseNamedProperties()
@@ -475,12 +487,12 @@ namespace MapiMessage {
         }
       }
 
-      std::ostringstream hexbuf;
-      hexbuf << "0x";
-      for(int b = 8; b < 16; ++b)
-      {
-        hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) itemBytes[b];
-      }
+//      std::ostringstream hexbuf;
+//      hexbuf << "0x";
+//      for(int b = 8; b < 16; ++b)
+//      {
+//        hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) itemBytes[b];
+//      }
 //      Trace("proptype=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propType
 //            << ", proptag=0x" << std::setfill('0') << std::hex << std::setw(4) << (unsigned int) propID
 //            << ", tagname=" << tagName

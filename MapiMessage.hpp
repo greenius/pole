@@ -46,8 +46,9 @@ public:
     Message(std::shared_ptr<POLE::Storage> storage);
     ~Message();
 
-    typedef std::map<std::wstring, std::wstring> HeaderMap;
-    HeaderMap getHeaders() const;
+  /* Normal SMTP style headers */
+  typedef std::map<std::string, std::string> HeaderMap;
+  HeaderMap getHeaders() const;
 
 private:
     Message();

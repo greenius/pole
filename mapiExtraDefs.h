@@ -26,6 +26,28 @@ enum PropertyAttributes {
   PROPATTR_WRITABLE = 4
 };
 
+/*
+ * AttachMethod from [MS-OXCMSG] 2.2.2.9
+ */
+
+enum TagAttachMethod {
+  // The attachment has just been created.
+  afNone =    0x00000000,
+  // The PidTagAttachDataBinary property (section 2.2.2.7) contains the attachment data.
+  afByValue = 0x00000001,
+  // The PidTagAttachLongPathname property (section 2.2.2.13) contains a fully qualified path identifying the attachment To recipients with access to a common file server.
+  afByReference = 0x00000002,
+  // The PidTagAttachLongPathname property contains a fully qualified path identifying the attachment.
+  afByReferenceOnly = 0x00000004,
+  // The attachment is an embedded message that is accessed via the RopOpenEmbeddedMessage ROP ([MS-OXCROPS] section 2.2.6.16).
+  afEmbeddedMessage = 0x00000005,
+  // The PidTagAttachDataObject property (section 2.2.2.8) contains data in an application-specific format.
+  afStorage = 0x00000006,
+  // The PidTagAttachLongPathname property contains a fully qualified path identifying the attachment. The PidNameAttachmentProviderType defines the web service API manipulating the attachment.
+  afByWebReference = 0x00000007
+};
+
+
 /* Copied From
  * https://docs.microsoft.com/en-us/office/client-developer/outlook/mapi/mapi-constants
  * Can't seem to find them in any header files

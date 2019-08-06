@@ -43,6 +43,7 @@
 		B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MapiMessage.cpp; sourceTree = SOURCE_ROOT; };
 		B094F03022F21B1A00C6E735 /* mapiExtraDefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mapiExtraDefs.h; sourceTree = SOURCE_ROOT; };
 		B0C4214E22EF6E5A0007BA60 /* MsgInfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MsgInfo; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0E92E6A22F9B1400034B148 /* ms-oxprops.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ms-oxprops.h"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +92,7 @@
 		B0C4215022EF6E5A0007BA60 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B0E92E6A22F9B1400034B148 /* ms-oxprops.h */,
 				B05ABA1822F09B900069EDAD /* mapidefs.h */,
 				B094F03022F21B1A00C6E735 /* mapiExtraDefs.h */,
 				B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */,

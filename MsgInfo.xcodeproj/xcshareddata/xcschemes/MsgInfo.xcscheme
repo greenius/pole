@@ -77,11 +77,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "testfiles/plain_jpeg_attached.msg"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/steven/ownCloud/docmoto/testFiles/msg/Preference\ for\ date\ format\ local_raw.msg"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

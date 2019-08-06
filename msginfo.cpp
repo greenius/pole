@@ -88,7 +88,7 @@ void showHeaders(const std::string& filename)
   auto headers = message->getHeaders();
   for(auto header: headers)
   {
-    std::wcout << header.first << ": " << header.second << std::endl;
+    std::cout << header.first << ": " << header.second << std::endl;
   }
 }
 
