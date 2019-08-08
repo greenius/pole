@@ -175,6 +175,7 @@ typedef struct _FILETIME
 /* successful HRESULT */
 #define hrSuccess				0
 
+#endif // ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 
 /* Recipient types */
@@ -188,6 +189,8 @@ typedef struct _FILETIME
 /* #define MAPI_AUTHORIZE 4		   recipient is a CMC authorizing user		*/
 /*#define MAPI_DISCRETE 0x10000000 Recipient is a P1 resend recipient       */
 #endif
+
+#ifndef ONLY_INCLUDE_CROSS_PLATFORM_MAPIDEFS
 
 /* Bit definitions for abFlags[0] of ENTRYID */
 #define MAPI_SHORTTERM			0x80

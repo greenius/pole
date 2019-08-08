@@ -3296,11 +3296,11 @@
 #endif
 /*
  * Description: Contains the Short-term Message ID (MID) ([MS-OXCDATA] section 2.2.1.2) of the first
- * Alternate Names: PidTagAddressBookMessageId
+ * Alternate Names: ptagAddrbookMID
  * Property Type: PtypInteger64
  */
-#ifndef ptagAddrbookMID
-#define ptagAddrbookMID 0x674F0014
+#ifndef PidTagAddressBookMessageId
+#define PidTagAddressBookMessageId 0x674F0014
 #endif
 /*
  * Description: Indicates whether moderation is enabled for the mail user or distribution list.
@@ -3560,11 +3560,11 @@
 #endif
 /*
  * Description: Specifies whether the message being synchronized is an FAI message.
- * Alternate Names: PidTagAssociated
+ * Alternate Names: ptagAssociated
  * Property Type: PtypBoolean
  */
-#ifndef ptagAssociated
-#define ptagAssociated 0x67AA000B
+#ifndef PidTagAssociated
+#define PidTagAssociated 0x67AA000B
 #endif
 /*
  * Description: Contains attachment encoding information.
@@ -3944,11 +3944,11 @@
 #endif
 /*
  * Description: Contains a structure that identifies the last change to the message or folder that is
- * Alternate Names: PidTagChangeNumber
+ * Alternate Names: ptagCn
  * Property Type: PtypInteger64
  */
-#ifndef ptagCn
-#define ptagCn 0x67A40014
+#ifndef PidTagChangeNumber
+#define PidTagChangeNumber 0x67A40014
 #endif
 /*
  * Description: Specifies the names of the children of the contact.
@@ -4488,11 +4488,11 @@
 #endif
 /*
  * Description: Contains the Folder ID (FID) ([MS-OXCDATA] section 2.2.1.1) of the folder.
- * Alternate Names: PidTagFolderId
+ * Alternate Names: ptagFID
  * Property Type: PtypInteger64
  */
-#ifndef ptagFID
-#define ptagFID 0x67480014
+#ifndef PidTagFolderId
+#define PidTagFolderId 0x67480014
 #endif
 /*
  * Description: Contains a computed value to specify the type or state of a folder.
@@ -4840,19 +4840,19 @@
 #endif
 /*
  * Description: Contains an identifier for a single instance of a row in the table.
- * Alternate Names: PidTagInstanceNum
+ * Alternate Names: ptagInstanceNum
  * Property Type: PtypInteger32
  */
-#ifndef ptagInstanceNum
-#define ptagInstanceNum 0x674E0003
+#ifndef PidTagInstanceNum
+#define PidTagInstanceNum 0x674E0003
 #endif
 /*
  * Description: Contains an identifier for all instances of a row in the table.
- * Alternate Names: PidTagInstID
+ * Alternate Names: ptagInstID
  * Property Type: PtypInteger64
  */
-#ifndef ptagInstID
-#define ptagInstID 0x674D0014
+#ifndef PidTagInstID
+#define PidTagInstID 0x674D0014
 #endif
 /*
  * Description: Indicates the code page used for the PidTagBody property (section 2.618) or the
@@ -5312,11 +5312,11 @@
 #endif
 /*
  * Description: Contains the top-level MIME message headers, all MIME message body part headers,
- * Alternate Names: PidTagMimeSkeleton
+ * Alternate Names: ptagMimeSkeleton
  * Property Type: PtypBinary
  */
-#ifndef ptagMimeSkeleton
-#define ptagMimeSkeleton 0x64F00102
+#ifndef PidTagMimeSkeleton
+#define PidTagMimeSkeleton 0x64F00102
 #endif
 /*
  * Description: Contains the mail user's cellular telephone number.
@@ -5528,11 +5528,11 @@
 #endif
 /*
  * Description: Contains the message ID of the original message included in replies or resent messages.
- * Alternate Names: PidTagOriginalMessageId,ptagOriginalInternetMessageID
+ * Alternate Names: ptagOriginalInternetMessageID,OriginalMessageId
  * Property Type: PtypString
  */
-#ifndef OriginalMessageId
-#define OriginalMessageId 0x1046001F
+#ifndef PidTagOriginalMessageId
+#define PidTagOriginalMessageId 0x1046001F
 #endif
 /*
  * Description: Contains the value of the original message sender's PidTagSenderAddressType
@@ -5752,11 +5752,11 @@
 #endif
 /*
  * Description: Contains a value that contains the Folder ID (FID), as specified in [MS-OXCDATA]
- * Alternate Names: PidTagParentFolderId
+ * Alternate Names: ptagParentFID
  * Property Type: PtypInteger64
  */
-#ifndef ptagParentFID
-#define ptagParentFID 0x67490014
+#ifndef PidTagParentFolderId
+#define PidTagParentFolderId 0x67490014
 #endif
 /*
  * Description: Contains the search key that is used to correlate the original message and the reports
@@ -5912,19 +5912,19 @@
 #endif
 /*
  * Description: Contains the address type of the end user to whom a read receipt is directed.
- * Alternate Names: PidTagReadReceiptAddressType,ptagReadReceiptAddrType
+ * Alternate Names: ptagReadReceiptAddrType,ReadReceiptAddrType
  * Property Type: PtypString
  */
-#ifndef ReadReceiptAddrType
-#define ReadReceiptAddrType 0x4029001F
+#ifndef PidTagReadReceiptAddressType
+#define PidTagReadReceiptAddressType 0x4029001F
 #endif
 /*
  * Description: Contains the email address of the end user to whom a read receipt is directed.
- * Alternate Names: PidTagReadReceiptEmailAddress,ptagReadReceiptEmailAddr
+ * Alternate Names: ptagReadReceiptEmailAddr,ReadReceiptEmailAddress
  * Property Type: PtypString
  */
-#ifndef ReadReceiptEmailAddress
-#define ReadReceiptEmailAddress 0x402A001F
+#ifndef PidTagReadReceiptEmailAddress
+#define PidTagReadReceiptEmailAddress 0x402A001F
 #endif
 /*
  * Description: Contains an address book EntryID.
@@ -6264,11 +6264,11 @@
 #endif
 /*
  * Description: Contains the value of the Reporting-MTA field for a delivery status notification, as
- * Alternate Names: PidTagReportingMessageTransferAgent
+ * Alternate Names: ptagDsnReportingMta
  * Property Type: PtypString
  */
-#ifndef ptagDsnReportingMta
-#define ptagDsnReportingMta 0x6820001F
+#ifndef PidTagReportingMessageTransferAgent
+#define PidTagReportingMessageTransferAgent 0x6820001F
 #endif
 /*
  * Description: Contains the display name for the entity (usually a server agent) that generated the
@@ -6504,19 +6504,19 @@
 #endif
 /*
  * Description: Specifies the name of the rule. Set on the FAI message.
- * Alternate Names: PidTagRuleMessageName
+ * Alternate Names: ptagRuleMsgName
  * Property Type: PtypString
  */
-#ifndef ptagRuleMsgName
-#define ptagRuleMsgName 0x65EC001F
+#ifndef PidTagRuleMessageName
+#define PidTagRuleMessageName 0x65EC001F
 #endif
 /*
  * Description: Identifies the client application that owns the rule. Set on the FAI message.
- * Alternate Names: PidTagRuleMessageProvider
+ * Alternate Names: ptagRuleMsgProvider
  * Property Type: PtypString
  */
-#ifndef ptagRuleMsgProvider
-#define ptagRuleMsgProvider 0x65EB001F
+#ifndef PidTagRuleMessageProvider
+#define PidTagRuleMessageProvider 0x65EB001F
 #endif
 /*
  * Description: Contains opaque data set by the client for the exclusive use of the client. Set on the FAI
@@ -6928,11 +6928,11 @@
 #endif
 /*
  * Description: Contains the SMTP email address format of the e–mail address of the sending mailbox
- * Alternate Names: PidTagSenderSmtpAddress,ptagSenderSmtpAddress
+ * Alternate Names: SenderSmtpAddress,ptagSenderSmtpAddress
  * Property Type: PtypString
  */
-#ifndef SenderSmtpAddress
-#define SenderSmtpAddress 0x5D01001F
+#ifndef PidTagSenderSmtpAddress
+#define PidTagSenderSmtpAddress 0x5D01001F
 #endif
 /*
  * Description: Contains the telephone number of the caller associated with a voice mail message.
@@ -6968,11 +6968,11 @@
 #endif
 /*
  * Description: Contains an EntryID that represents the Sent Items folder for the message.
- * Alternate Names: PidTagSentMailSvrEID
+ * Alternate Names: ptagSentMailSvrEID
  * Property Type: PtypServerId
  */
-#ifndef ptagSentMailSvrEID
-#define ptagSentMailSvrEID 0x674000FB
+#ifndef PidTagSentMailSvrEID
+#define PidTagSentMailSvrEID 0x674000FB
 #endif
 /*
  * Description: Contains an email address type.
@@ -7000,11 +7000,11 @@
 #endif
 /*
  * Description: 
- * Alternate Names: PidTagSentRepresentingFlags
+ * Alternate Names: ptagSentRepresentingFlags
  * Property Type: PtypInteger32
  */
-#ifndef ptagSentRepresentingFlags
-#define ptagSentRepresentingFlags 0x401A0003
+#ifndef PidTagSentRepresentingFlags
+#define PidTagSentRepresentingFlags 0x401A0003
 #endif
 /*
  * Description: Contains the display name for the end user who is represented by the sending
@@ -7024,19 +7024,19 @@
 #endif
 /*
  * Description: Contains the SMTP email address of the end user who is represented by the sending
- * Alternate Names: PidTagSentRepresentingSmtpAddress,ptagRecipientSentRepresentingSMTPAddress
+ * Alternate Names: ptagRecipientSentRepresentingSMTPAddress,SentRepresentingSMTPAddressXSO
  * Property Type: PtypString
  */
-#ifndef SentRepresentingSMTPAddressXSO
-#define SentRepresentingSMTPAddressXSO 0x5D02001F
+#ifndef PidTagSentRepresentingSmtpAddress
+#define PidTagSentRepresentingSmtpAddress 0x5D02001F
 #endif
 /*
  * Description: Contains a serialized list of REPLID and REPLGUID pairs which represent all or part of
- * Alternate Names: PidTagSerializedReplidGuidMap
+ * Alternate Names: ptagSerializedReplidGuidMap
  * Property Type: PtypBinary
  */
-#ifndef ptagSerializedReplidGuidMap
-#define ptagSerializedReplidGuidMap 0x66380102
+#ifndef PidTagSerializedReplidGuidMap
+#define PidTagSerializedReplidGuidMap 0x66380102
 #endif
 /*
  * Description: Contains the SMTP address of the Message object.
@@ -7232,11 +7232,11 @@
 #endif
 /*
  * Description: Specifies the character set of an attachment received via MIME with the content-type of
- * Alternate Names: PidTagTextAttachmentCharset
+ * Alternate Names: ptagTextAttachmentCharset
  * Property Type: PtypString
  */
-#ifndef ptagTextAttachmentCharset
-#define ptagTextAttachmentCharset 0x371B001F
+#ifndef PidTagTextAttachmentCharset
+#define PidTagTextAttachmentCharset 0x371B001F
 #endif
 /*
  * Description: Contains the mail user's photo in .jpg format.

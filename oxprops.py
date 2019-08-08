@@ -77,6 +77,7 @@ class PropertyValues:
         # Scan names, preferring dispid* or PR_*
         bestDispid=''
         bestPR=''
+        bestPid=''
         bestOther=''
         for n in self.names:
             if n.startswith('dispid'):
@@ -85,6 +86,9 @@ class PropertyValues:
             elif n.startswith('PR_'):
                 if not bestPR or (len(n) < len(bestPR)):
                     bestPR = n
+            elif n.startswith('PidTag'):
+                if not bestPid or (len(n) < len(bestPid)):
+                    bestPid = n
             elif not bestOther or (len(n) < len(bestOther)):
                 bestOther = n
 
@@ -92,6 +96,8 @@ class PropertyValues:
             return bestDispid
         elif bestPR:
             return bestPR
+        elif bestPid:
+            return bestPid
         else:
             return bestOther
 
