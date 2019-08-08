@@ -79,6 +79,9 @@ void showMsgInfo(const std::string& filename)
 {
   auto message = MapiMessage::Message::createFromFile(filename);
   // This just lets the Trace messages show stuff for now...
+#ifdef INCLUDE_DIAGNOSTICS
+  message->parse();
+#endif
 }
 
 void showHeaders(const std::string& filename)

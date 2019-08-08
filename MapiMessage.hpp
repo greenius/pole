@@ -11,7 +11,7 @@
 
 #include <memory>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 // Forward References
@@ -47,18 +47,20 @@ public:
     ~Message();
 
   /* Normal SMTP style headers */
-  typedef std::map<std::string, std::string> HeaderMap;
-  HeaderMap getHeaders() const;
+  typedef std::unordered_multimap<std::string, std::string> HeaderMap;
+  HeaderMap getHeaders();
 
+  // void parse();
 private:
     Message();
     Message(const Message&);
 
-  void parse();
-  void parseProperties();
   void parseNamedProperties();
-  void parseRecipients();
-  void parseAttachments();
+  void parseRootHeader();
+#ifdef INCLUDE_DIAGNOSTICS
+   void parseProperties();
+   void parseRecipients();
+   void parseAttachments();
 
   void parseRecipient(int i);
   void parseAttachment(int i);
@@ -69,18 +71,20 @@ private:
   std::string getString8(const std::string& path, uint32_t proptag, size_t length);
   std::u16string getString16(const std::string& path, uint32_t proptag, size_t length);
   std::unique_ptr<POLE::Stream> openStream(const std::string& path);
+#endif
 
 private:
   std::shared_ptr<POLE::Storage> m_storage;
-  std::map<uint16_t,std::string> m_namedProperties; /* PropertyID -> name */
+  std::unordered_map<uint16_t,std::string> m_namedProperties; /* PropertyID -> name */
 
+#ifdef INCLUDE_DIAGNOSTICS
   std::vector<std::unique_ptr<Recipient>> m_recipients;
   std::vector<std::unique_ptr<Attachment>> m_attachments;
-  HeaderMap m_headerMap;
-
+  // HeaderMap m_headerMap;
+#endif
+  
   uint32_t m_recipientCount;
   uint32_t m_attachmentCount;
-
 };
 
 }

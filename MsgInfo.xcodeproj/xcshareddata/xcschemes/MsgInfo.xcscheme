@@ -65,11 +65,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-h"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-i"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-d"
@@ -77,6 +77,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "testfiles/plain_jpeg_attached.msg"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/steven/ownCloud/docmoto/testFiles/msg/Multiple\ named\ recipients.msg"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

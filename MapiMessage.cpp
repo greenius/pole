@@ -12,6 +12,7 @@
 #include "mapidefs.h"
 #include "mapitags.h"
 #include "mapitagnames.h"
+#include "ms-oxprops.h"
 #include "pole.h"
 
 #include <iostream>
@@ -26,6 +27,10 @@ namespace {
 #pragma mark Debugging
 
 #ifndef Trace
+
+#define Trace(s) {}
+
+#else
 
 class IosStateSaver {
 public:
@@ -50,32 +55,6 @@ private:
 
 #define Trace(s) { IosStateSaver state(std::cout); std::cout << s << std::endl; }
 
-std::string hexdump(const std::vector<uint8_t> data)
-{
-  const int lineWidth = 16;
-  int index = 0;
-
-  std::ostringstream hexbuf;
-  // hexbuf << std::setfill('0') << std::hex << std::setw(2);
-  for(auto b: data)
-  {
-    if((index %lineWidth) == 0)
-    {
-      if(index != 0)
-      {
-        hexbuf << "\n";
-      }
-    }
-    else
-    {
-      hexbuf << " ";
-    }
-    hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) b;
-    ++index;
-  }
-  return hexbuf.str();
-}
-
 
 #endif
 
@@ -87,11 +66,44 @@ std::string hexdump(const std::vector<uint8_t> data)
     return stringConverter.to_bytes(src);
   }
 
+  std::string hexdump(const std::vector<uint8_t> data)
+  {
+    const int lineWidth = 16;
+    int index = 0;
+
+    std::ostringstream hexbuf;
+    // hexbuf << std::setfill('0') << std::hex << std::setw(2);
+    for(auto b: data)
+    {
+      if((index %lineWidth) == 0)
+      {
+        if(index != 0)
+        {
+          hexbuf << "\n";
+        }
+      }
+      else
+      {
+        hexbuf << " ";
+      }
+      hexbuf << std::setfill('0') << std::hex << std::setw(2) << (unsigned int) b;
+      ++index;
+    }
+    return hexbuf.str();
+  }
 
 } // local namespace
 
 
 namespace MapiMessage {
+
+#pragma mark Constants
+
+  static const std::string StreamName_Properties_Version{"__properties_version1.0"};
+  static const std::string StreamName_PropertyData{"__substg1.0_"};
+  static const std::string StreamName_NamedProperties{"__nameid_version1.0"};
+  static const std::string StreamName_Recipient{"__recip_version1.0"};
+  static const std::string StreamName_Attachment{"__attach_version1.0"};
 
 #pragma mark MapMessage non member functioms
 
@@ -166,6 +178,15 @@ namespace MapiMessage {
   {
   public:
     StreamReader(std::unique_ptr<POLE::Stream> stream) : m_stream(std::move(stream)) {}
+    StreamReader(const std::shared_ptr<POLE::Storage>& store, const std::string& path)
+    {
+      auto stream = std::make_unique<POLE::Stream>(store.get(), path);
+      if(stream->fail())
+      {
+        throw std::runtime_error("Failed to open stream " + path);
+      }
+      m_stream = std::move(stream);
+    }
 
     std::string fullName() const { return m_stream->fullName(); }
     size_t size() const { return m_stream->size(); }
@@ -236,13 +257,224 @@ namespace MapiMessage {
     std::unique_ptr<POLE::Stream> m_stream;
   };
 
-#pragma mark Constants
+#pragma StreamPropertyReader
 
-  static const std::string StreamName_Properties_Version{"__properties_version1.0"};
-  static const std::string StreamName_PropertyData{"__substg1.0_"};
-  static const std::string StreamName_NamedProperties{"__nameid_version1.0"};
-  static const std::string StreamName_Recipient{"__recip_version1.0"};
-  static const std::string StreamName_Attachment{"__attach_version1.0"};
+  class StreamPropertyReader
+  {
+    struct PropEntry {
+      uint16_t propID;
+      uint16_t propType;
+      bool readable;
+      uint8_t bytes[8];
+    };
+
+  public:
+    StreamPropertyReader(const std::shared_ptr<POLE::Storage>& store, const std::string& path = std::string());
+
+    std::string getPropertyString(uint16_t propid) const;
+    bool hasPropertyString(uint16_t propid) const;
+
+  private:
+    void readHeaders();
+    std::vector<uint8_t> getBinaryData(uint32_t proptag, size_t length) const;
+    std::string getString8(uint32_t proptag, size_t length) const;
+    std::u16string getString16(uint32_t proptag, size_t length) const;
+
+    std::string m_path;
+    std::shared_ptr<POLE::Storage> m_store;
+    /* Just keep a vector... we'll have to iterate to find propid. If it is a performance problem then replace with a map or multimap */
+    std::vector<PropEntry> m_entries;
+  };
+
+  StreamPropertyReader::StreamPropertyReader(const std::shared_ptr<POLE::Storage>& store, const std::string& path) :
+  m_store(store),
+  m_path(path)
+  {
+    readHeaders();
+  }
+
+
+  std::string StreamPropertyReader::getPropertyString(uint16_t propid) const
+  {
+    for(auto item: m_entries)
+    {
+      if(item.propID == propid)
+      {
+        if(item.readable)
+        {
+          switch(item.propType)
+          {
+            case PT_SHORT:
+            {
+              unsigned short v = bytesToU16(item.bytes);
+              // Trace(tagName << "=" << (unsigned int) v << " (I2)");
+              return std::to_string(v);
+            }
+            case PT_LONG:
+            {
+              unsigned long v = bytesToU32(item.bytes);
+              // Trace(tagName << "=" << v << " (I4)");
+              return std::to_string(v);
+            }
+            case PT_FLOAT:
+            {
+              float v = bytesToFloat32(item.bytes);
+              // Trace(tagName << "="<< v << "(R4)");
+              return std::to_string(v);
+            }
+            case PT_DOUBLE:
+            {
+              double v = bytesToFloat64(item.bytes);
+              // Trace(tagName << "=" << v << " (R4)");
+              return std::to_string(v);
+            }
+            case PT_BOOLEAN:
+            {
+              bool v = bytesToBool(item.bytes);
+              // Trace(tagName << "=" << (v ? "true" : "false") << " (Bool)");
+              return v ? "true" : "false";
+            }
+            case PT_SYSTIME:
+            {
+              /* 8 bytes; a 64-bit integer representing the number of
+               * 100-nanosecond intervals since January 1, 1601
+               */
+              uint64_t v = bytesToU64(item.bytes);
+              auto date = ptSystimeToSystemClock(v);
+              time_t t = std::chrono::system_clock::to_time_t(date);
+              // auto dateStr = std::put_time(std::localtime(&t), "%F %T");
+              // Trace(tagName << "=" << dateStr << " (SYSTIME)");
+              // break;
+              std::ostringstream dateStr;
+              // dateStr << std::put_time(std::gmtime(&t), "%FT%T%z"); // ISO8601
+              dateStr << std::put_time(std::gmtime(&t), "%c");
+              return dateStr.str();
+            }
+            case PT_BINARY:
+            {
+              // Trace("BINARY... TODO, size=" << bytesToU32(itemBytes + 8));
+              uint32_t propTag = PROP_TAG(item.propType, item.propID);
+              std::vector<uint8_t> v = getBinaryData(propTag, bytesToU32(item.bytes));
+              // Trace(tagName << "=" << "BINARY: " << v.size() << " bytes\n" << hexdump(v));
+              // break;
+              return hexdump(v);
+            }
+            case PT_UNICODE:
+            {
+              // Variable UTF16
+              // Note the length is +2 for null termination
+              std::u16string v16 = getString16(PROP_TAG(item.propType, item.propID), bytesToU32(item.bytes));
+              std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> stringConverter;
+              std::string v8 = stringConverter.to_bytes(v16);
+              // Trace(tagName << "=\"" << v8 << "\" (UNICODE16)");
+              return v8;
+            }
+            case PT_STRING8:
+            {
+              // Variable UTF8
+              // Note the length is +1 for null termination
+              std::string v = getString8(PROP_TAG(item.propType, item.propID), bytesToU32(item.bytes));
+              // Trace(tagName << "=\"" << v << "\" (STRING8)");
+              // break;
+              return v;
+            }
+            default:
+            {
+              // Trace(tagName << "=" << "Unknown property type " << propType);
+              // break;
+              return {};
+            }
+          }
+        } // switch(propType)
+      }
+    }
+    return {};
+  }
+
+  bool StreamPropertyReader::hasPropertyString(uint16_t propid) const
+  {
+    for(auto item: m_entries)
+    {
+      if(item.propID == propid)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void StreamPropertyReader::readHeaders()
+  {
+    // StreamReader reader(m_store->openStream(m_path + StreamName_Properties_Version));
+    StreamReader reader(m_store, m_path + "/" + StreamName_Properties_Version);
+
+    // Skip the header
+    size_t headerSize = m_path.empty() ? 32 : 8;
+    reader.skip(headerSize);
+
+    int nItems = reader.size() - headerSize;
+    m_entries.resize(nItems);
+    for(int i = 0; (i < nItems) && !reader.fail(); ++i)
+    {
+      PropEntry& entry = m_entries[i];
+
+      // Trace("Item: " << i);
+      unsigned char itemBytes[16];
+      reader.read(itemBytes, sizeof(itemBytes));
+
+      unsigned long propTag = bytesToU32(itemBytes);
+      unsigned long flags = bytesToU32(itemBytes+4);
+
+      // The other 8 bytes depend on the type...
+      entry.propType = PROP_TYPE(propTag);
+      entry.propID = PROP_ID(propTag);
+      entry.readable = flags & PROPATTR_READABLE;
+      memcpy(entry.bytes, itemBytes+8, 8);
+    }
+  }
+
+std::vector<uint8_t> StreamPropertyReader::getBinaryData(uint32_t proptag, size_t length) const
+{
+  std::ostringstream streamName;
+  streamName << m_path;
+  if(m_path.empty() || (m_path.back() != '/'))
+  {
+    streamName << "/";
+  }
+  streamName << StreamName_PropertyData
+  << std::hex << std::uppercase << std::setw(8) << std::setfill('0') << proptag;
+
+  // auto stream = openStream(streamName.str());
+  StreamReader stream(m_store, streamName.str());
+
+  std::vector<uint8_t> result(length);
+  auto count = stream.read(result.data(), length);
+  if(count != length)
+  {
+    std::ostringstream msg;
+    msg << "Error reading from stream " << streamName.str() << ", wanted=" << length << ", result=" << count;
+    throw std::runtime_error(msg.str());
+  }
+  return result;
+}
+
+/* Note length is +1 for null */
+std::string StreamPropertyReader::getString8(uint32_t proptag, size_t length) const
+{
+  auto bytes = getBinaryData(proptag, length-1);
+  const char* chars = reinterpret_cast<const char*>(bytes.data());
+  return std::string(chars, bytes.size());
+}
+
+/* Note lenth is +2 for null */
+std::u16string StreamPropertyReader::getString16(uint32_t proptag, size_t length) const
+{
+  auto bytes = getBinaryData(proptag, length-2);
+  // Assume correct endian
+  const char16_t* chars = reinterpret_cast<char16_t*>(bytes.data());
+  return std::u16string(chars, bytes.size() / sizeof(char16_t));
+}
+
 
 
 #pragma mark Message class implementation
@@ -253,7 +485,7 @@ namespace MapiMessage {
     if(storage->open())
     {
       std::unique_ptr<Message> msg(new Message(std::move(storage)));
-      msg->parse();
+      // msg->parse();
       return msg;
     }
     return 0;
@@ -263,9 +495,11 @@ namespace MapiMessage {
   Message::Message(std::shared_ptr<POLE::Storage> storage) :
   m_storage(storage),
   m_namedProperties(),
+#ifdef INCLUDE_DIAGNOSTICS
   m_recipients(),
   m_attachments(),
-  m_headerMap(),
+#endif
+  // m_headerMap(),
   m_recipientCount(0),
   m_attachmentCount(0)
   {
@@ -276,11 +510,125 @@ namespace MapiMessage {
     // Trace("Destruct Message");
   }
 
-  Message::HeaderMap Message::getHeaders() const
+  Message::HeaderMap Message::getHeaders()
   {
-    return m_headerMap;
+
+    // Simple properties that map directly...
+    HeaderMap result;
+
+    parseNamedProperties();
+    parseRootHeader();
+
+    // Root properties....
+    StreamPropertyReader propReader(m_storage);
+
+
+    // Start off by getting any transmitted headers
+    std::string transmittedHeaders = propReader.getPropertyString(PROP_ID(PR_TRANSPORT_MESSAGE_HEADERS));
+    // Parse transmitted headers... (also see how we handle .eml)
+    // Needs to handle multi line and different encodings
+
+    // Simple mapped properties
+
+    std::unordered_map<uint16_t, std::string> propertyMap{
+      { PROP_ID(PR_SUBJECT), "Subject" },
+      { PROP_ID(PR_CLIENT_SUBMIT_TIME), "Date" },
+      { PROP_ID(PR_INTERNET_MESSAGE_ID), "Message-Id" }
+    };
+
+    for(auto prop: propertyMap)
+    {
+      auto value = propReader.getPropertyString(prop.first);
+      if(!value.empty())
+      {
+        result.emplace(prop.second, value);
+      }
+    }
+
+#if 0
+    // This is not as simple as mapping the Mapi Property to an SMTP one
+    // eg. The display name and email address are seperate properties
+    // X-* properties may be named properties
+
+    // Maybe let the parser collect properties we might be interested in
+
+    // Then splice them together when complete
+    // Or just set up a different set of properties and add to the Metatag defs
+
+    // Or set up a callback mechanism during parse...
+    // interface to: getTagID, getTagName, isNamedProperty, getValueString()
+
+    m_requiredProperties = {
+      { PROP_ID(PR_SUBJECT), "Subject" },
+      { PROP_ID(PR_CONVERSATION_TOPIC), "Subject" },
+
+      // Need to combine as "DisplayName <emailAddress>"
+      { PROP_ID(PR_SENT_REPRESENTING_NAME), "From-name" }, // Display name
+      { PROP_ID(PR_SENDER_NAME), "From-name" },
+      { PROP_ID(PR_SENDER_EMAIL_ADDRESS), "From-email" }, // Email address
+
+      // If there are multiple To/CC/BCC then they get combined as:
+      // Name1 <email1>, name2 <email2>, name3 <email3>
+      { PROP_ID(PR_DISPLAY_TO), "To" },
+      { PROP_ID(PR_DISPLAY_CC), "Cc" },
+      { PROP_ID(PR_DISPLAY_BCC), "Bcc" },
+
+      { PROP_ID(PR_DISPLAY_NAME), "To" }, // In a recipient stream
+      { PROP_ID(PR_EMAIL_ADDRESS), "To" }, // In a recipient stream
+
+      { PROP_ID(PR_RECEIVED_BY_NAME), "Delivered-To-name" },
+      { PROP_ID(PR_RCVD_REPRESENTING_NAME), "Delivered-To-name" },
+      { PROP_ID(PR_RECEIVED_BY_EMAIL_ADDRESS), "Delivered-To-email" },
+      { PROP_ID(PR_RCVD_REPRESENTING_EMAIL_ADDRESS), "Delivered-To-email" },
+
+      //{ PROPID, "X-Original-To" },
+      //{ PROPID, "Return-Path" },
+
+      { PROP_ID(PR_CLIENT_SUBMIT_TIME), "Date" },
+      { PROP_ID(PR_MESSAGE_DELIVERY_TIME), "Date" },
+      //      { PROP_ID(PR_CREATION_TIME), "Date" },  // When it was added to Outlook
+      //      { PROP_ID(PR_LAST_MODIFICATION_TIME), "Date" },
+
+      // { PROPID, "Priority" },
+
+      //{ PROPID, "Content-Transfer-Encoding" },
+      //{ PROPID, "Content-Type" },
+      //{ PROPID, "X-Mailer" },
+
+      // { PROPID, "X-Universally-Unique-Identifier" },
+      { PROP_ID(PR_INTERNET_MESSAGE_ID), "Message-Id" },
+      // { PROPID, "X-Spam-Status" },
+      // { PROPID, "Authentication-Results" },
+      // { PROPID, "MIME-Version" },
+      // { PROPID, "Received-SPF" },
+      // { PROPID, "User-Agent" },
+      // { PROPID, "X-Received" },
+
+      // { PROPID, "X-Smtp-Server" },
+
+      //{ PROPID, "X-swiftinternet-MailScanner" },
+      //{ PROPID, "X-swiftinternet-MailScanner-From" },
+      //{ PROPID, "X-swiftinternet-MailScanner-ID" },
+      //{ PROPID, "X-swiftinternet-MailScanner-Information" },
+
+      // Could also take the transport properties and pipe through same logic as .eml
+      { PROP_ID(PR_TRANSPORT_MESSAGE_HEADERS), "*" }
+
+      // Also extract any Named Properties that start "X-"?
+    };
+#endif
+
+
+    // Recipients
+
+    // Attachment names
+
+    // Named Properties
+
+    return result;
   }
 
+#ifdef INCLUDE_DIAGNOSTICS
   std::unique_ptr<POLE::Stream> Message::openStream(const std::string& path)
   {
     // Note this is C++14 only... check that CentOS G++ can build this
@@ -292,7 +640,9 @@ namespace MapiMessage {
     }
     return propStream;
   }
+#endif
 
+#ifdef INCLUDE_DIAGNOSTICS
   void Message::parse()
   {
     parseNamedProperties();
@@ -301,7 +651,9 @@ namespace MapiMessage {
     parseRecipients();
     parseAttachments();
   }
+#endif
 
+#ifdef INCLUDE_DIAGNOSTICS
   void Message::parseRecipients()
   {
     for(int i = 0; i < m_recipientCount; ++i)
@@ -309,7 +661,9 @@ namespace MapiMessage {
       parseRecipient(i);
     }
   }
+#endif
 
+#ifdef INCLUDE_DIAGNOSTICS
   void Message::parseRecipient(int i)
   {
     Trace("Recipient " << i);
@@ -326,7 +680,9 @@ namespace MapiMessage {
     parsePropertyData(reader, pathStr.str());
 
   }
+#endif
 
+#ifdef INCLUDE_DIAGNOSTICS
   void Message::parseAttachments()
   {
     for(int i = 0; i < m_attachmentCount; ++i)
@@ -352,24 +708,26 @@ namespace MapiMessage {
 
     // Attachment is in stream __substg1.0_3701000D
   }
+#endif
 
   void Message::parseNamedProperties()
   {
     // See Section 2.2.3 of [MC-OXMSG]
     // Open the String Stream so we can refer to it later
     std::string path{"/" + StreamName_NamedProperties};
-    StreamReader stringReader(openStream(path + "/" + StreamName_PropertyData+"00040102"));
+    StreamReader stringReader(m_storage, path + "/" + StreamName_PropertyData+"00040102");
 
     // Open the Entry Stream
-    StreamReader entryReader(openStream(path + "/" +  StreamName_PropertyData+"00030102"));
+    StreamReader entryReader(m_storage, path + "/" +  StreamName_PropertyData+"00030102");
     int nEntries = entryReader.size() / 8;
+    m_namedProperties.reserve(nEntries);
     for(int entryIndex = 0; entryIndex < nEntries; ++entryIndex)
     {
       auto idOrOffset = entryReader.readU32();
       auto indexAndKind = entryReader.readU32();
 
       bool isString = indexAndKind & 1;
-      int guidIndex = indexAndKind >> 1;
+      __unused int guidIndex = indexAndKind >> 1;
 
       uint16_t propertyID = 0x8000 + entryIndex;
 
@@ -420,7 +778,22 @@ namespace MapiMessage {
     }
   }
 
-  void Message::parseProperties()
+  void Message::parseRootHeader()
+  {
+    // Get the top level properties information
+    std::string path{"/"};
+    StreamReader reader(m_storage, path + StreamName_Properties_Version);
+
+    reader.skip(8);
+    __unused unsigned long nextRecipientID = reader.readU32();
+    __unused unsigned long nextAttachmentID = reader.readU32();
+    m_recipientCount = reader.readU32();
+    m_attachmentCount = reader.readU32();
+  }
+
+
+#ifdef INCLUDE_DIAGNOSTICS
+void Message::parseProperties()
   {
     // Get the top level properties information
     std::string path{"/"};
@@ -581,8 +954,9 @@ namespace MapiMessage {
       } // switch(propType)
     } // READABLE
   } // ::parse()
+#endif
 
-
+#ifdef INCLUDE_DIAGNOSTICS
   std::vector<uint8_t> Message::getBinaryData(const std::string& path, uint32_t proptag, size_t length)
   {
     std::ostringstream streamName;
@@ -623,6 +997,6 @@ namespace MapiMessage {
     const char16_t* chars = reinterpret_cast<char16_t*>(bytes.data());
     return std::u16string(chars, bytes.size() / sizeof(char16_t));
   }
-
+#endif
 
 } // namespace
