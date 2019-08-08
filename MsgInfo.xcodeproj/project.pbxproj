@@ -7,13 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B023A10E22FC803300A4BFBD /* StreamReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10822FC803000A4BFBD /* StreamReader.cpp */; };
-		B023A10F22FC803300A4BFBD /* mapiUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10A22FC803100A4BFBD /* mapiUtils.cpp */; };
-		B023A11022FC803300A4BFBD /* StreamPropertyReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10C22FC803200A4BFBD /* StreamPropertyReader.cpp */; };
-		B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1222F08C2F0069EDAD /* pole.cpp */; };
+		B023A11922FC835E00A4BFBD /* mapiUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10A22FC803100A4BFBD /* mapiUtils.cpp */; };
+		B023A11A22FC835E00A4BFBD /* StreamPropertyReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10C22FC803200A4BFBD /* StreamPropertyReader.cpp */; };
+		B023A11B22FC835E00A4BFBD /* StreamReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10822FC803000A4BFBD /* StreamReader.cpp */; };
+		B023A11C22FC835E00A4BFBD /* MapiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */; };
+		B023A11D22FC835E00A4BFBD /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1222F08C2F0069EDAD /* pole.cpp */; };
+		B023A11E22FC837000A4BFBD /* mapiUtils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B023A10B22FC803100A4BFBD /* mapiUtils.hpp */; };
+		B023A11F22FC837000A4BFBD /* StreamPropertyReader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B023A10D22FC803300A4BFBD /* StreamPropertyReader.hpp */; };
+		B023A12022FC837000A4BFBD /* StreamReader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B023A10922FC803000A4BFBD /* StreamReader.hpp */; };
+		B023A12122FC837000A4BFBD /* ms-oxprops.h in Headers */ = {isa = PBXBuildFile; fileRef = B0E92E6A22F9B1400034B148 /* ms-oxprops.h */; };
+		B023A12222FC837000A4BFBD /* mapidefs.h in Headers */ = {isa = PBXBuildFile; fileRef = B05ABA1822F09B900069EDAD /* mapidefs.h */; };
+		B023A12322FC837000A4BFBD /* mapiExtraDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = B094F03022F21B1A00C6E735 /* mapiExtraDefs.h */; };
+		B023A12422FC837000A4BFBD /* MapiMessage.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B094F02D22F1ED5E00C6E735 /* MapiMessage.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
+		B023A12522FC837000A4BFBD /* mapitags.h in Headers */ = {isa = PBXBuildFile; fileRef = B05ABA1722F09B900069EDAD /* mapitags.h */; };
+		B023A12622FC837000A4BFBD /* pole.h in Headers */ = {isa = PBXBuildFile; fileRef = B05ABA1422F08C2F0069EDAD /* pole.h */; };
+		B023A13422FC843500A4BFBD /* mapitagnames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08B66AF22F32EB800BB6989 /* mapitagnames.cpp */; };
+		B023A13522FC843800A4BFBD /* mapitagnames.h in Headers */ = {isa = PBXBuildFile; fileRef = B08B66AE22F32EB800BB6989 /* mapitagnames.h */; };
+		B023A13722FC84CF00A4BFBD /* libmapimessage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B023A11522FC833A00A4BFBD /* libmapimessage.a */; };
 		B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1322F08C2F0069EDAD /* msginfo.cpp */; };
-		B08B66B022F32EB800BB6989 /* mapitagnames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08B66AF22F32EB800BB6989 /* mapitagnames.cpp */; };
-		B094F02F22F1ED5E00C6E735 /* MapiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B094F02E22F1ED5E00C6E735 /* MapiMessage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +46,7 @@
 		B023A10B22FC803100A4BFBD /* mapiUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mapiUtils.hpp; sourceTree = SOURCE_ROOT; };
 		B023A10C22FC803200A4BFBD /* StreamPropertyReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamPropertyReader.cpp; sourceTree = SOURCE_ROOT; };
 		B023A10D22FC803300A4BFBD /* StreamPropertyReader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StreamPropertyReader.hpp; sourceTree = SOURCE_ROOT; };
+		B023A11522FC833A00A4BFBD /* libmapimessage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libmapimessage.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B05ABA1222F08C2F0069EDAD /* pole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pole.cpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1322F08C2F0069EDAD /* msginfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msginfo.cpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1422F08C2F0069EDAD /* pole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pole.h; sourceTree = SOURCE_ROOT; };
@@ -56,16 +68,31 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		B0C4214B22EF6E5A0007BA60 /* Frameworks */ = {
+		B023A11222FC833A00A4BFBD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B0C4214B22EF6E5A0007BA60 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B023A13722FC84CF00A4BFBD /* libmapimessage.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B023A13622FC84CF00A4BFBD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B094F02522F1ECC300C6E735 /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +112,7 @@
 				B094F02522F1ECC300C6E735 /* Support */,
 				B0C4215022EF6E5A0007BA60 /* src */,
 				B0C4214F22EF6E5A0007BA60 /* Products */,
+				B023A13622FC84CF00A4BFBD /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -94,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				B0C4214E22EF6E5A0007BA60 /* MsgInfo */,
+				B023A11522FC833A00A4BFBD /* libmapimessage.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,7 +153,44 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		B023A11322FC833A00A4BFBD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B023A11F22FC837000A4BFBD /* StreamPropertyReader.hpp in Headers */,
+				B023A12222FC837000A4BFBD /* mapidefs.h in Headers */,
+				B023A12322FC837000A4BFBD /* mapiExtraDefs.h in Headers */,
+				B023A12022FC837000A4BFBD /* StreamReader.hpp in Headers */,
+				B023A12122FC837000A4BFBD /* ms-oxprops.h in Headers */,
+				B023A13522FC843800A4BFBD /* mapitagnames.h in Headers */,
+				B023A12422FC837000A4BFBD /* MapiMessage.hpp in Headers */,
+				B023A12522FC837000A4BFBD /* mapitags.h in Headers */,
+				B023A12622FC837000A4BFBD /* pole.h in Headers */,
+				B023A11E22FC837000A4BFBD /* mapiUtils.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		B023A11422FC833A00A4BFBD /* mapimessage */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B023A11622FC833A00A4BFBD /* Build configuration list for PBXNativeTarget "mapimessage" */;
+			buildPhases = (
+				B023A11122FC833A00A4BFBD /* Sources */,
+				B023A11222FC833A00A4BFBD /* Frameworks */,
+				B023A11322FC833A00A4BFBD /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = mapimessage;
+			productName = mapimessage;
+			productReference = B023A11522FC833A00A4BFBD /* libmapimessage.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		B0C4214D22EF6E5A0007BA60 /* MsgInfo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B0C4215522EF6E5A0007BA60 /* Build configuration list for PBXNativeTarget "MsgInfo" */;
@@ -151,6 +217,9 @@
 				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = "Greenius Limited";
 				TargetAttributes = {
+					B023A11422FC833A00A4BFBD = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
 					B0C4214D22EF6E5A0007BA60 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
@@ -170,28 +239,60 @@
 			projectRoot = "";
 			targets = (
 				B0C4214D22EF6E5A0007BA60 /* MsgInfo */,
+				B023A11422FC833A00A4BFBD /* mapimessage */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B023A11122FC833A00A4BFBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B023A13422FC843500A4BFBD /* mapitagnames.cpp in Sources */,
+				B023A11C22FC835E00A4BFBD /* MapiMessage.cpp in Sources */,
+				B023A11B22FC835E00A4BFBD /* StreamReader.cpp in Sources */,
+				B023A11922FC835E00A4BFBD /* mapiUtils.cpp in Sources */,
+				B023A11D22FC835E00A4BFBD /* pole.cpp in Sources */,
+				B023A11A22FC835E00A4BFBD /* StreamPropertyReader.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B0C4214A22EF6E5A0007BA60 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B023A10F22FC803300A4BFBD /* mapiUtils.cpp in Sources */,
-				B08B66B022F32EB800BB6989 /* mapitagnames.cpp in Sources */,
-				B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */,
-				B023A10E22FC803300A4BFBD /* StreamReader.cpp in Sources */,
-				B094F02F22F1ED5E00C6E735 /* MapiMessage.cpp in Sources */,
 				B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */,
-				B023A11022FC803300A4BFBD /* StreamPropertyReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		B023A11722FC833A00A4BFBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5XSV9CAPEV;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = /include/mapimessage;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		B023A11822FC833A00A4BFBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5XSV9CAPEV;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = /include/mapimessage;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		B0C4215322EF6E5A0007BA60 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -242,7 +343,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -293,7 +394,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -320,6 +421,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B023A11622FC833A00A4BFBD /* Build configuration list for PBXNativeTarget "mapimessage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B023A11722FC833A00A4BFBD /* Debug */,
+				B023A11822FC833A00A4BFBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B0C4214922EF6E5A0007BA60 /* Build configuration list for PBXProject "MsgInfo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
