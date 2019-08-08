@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B023A10E22FC803300A4BFBD /* StreamReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10822FC803000A4BFBD /* StreamReader.cpp */; };
+		B023A10F22FC803300A4BFBD /* mapiUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10A22FC803100A4BFBD /* mapiUtils.cpp */; };
+		B023A11022FC803300A4BFBD /* StreamPropertyReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B023A10C22FC803200A4BFBD /* StreamPropertyReader.cpp */; };
 		B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1222F08C2F0069EDAD /* pole.cpp */; };
 		B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B05ABA1322F08C2F0069EDAD /* msginfo.cpp */; };
 		B08B66B022F32EB800BB6989 /* mapitagnames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B08B66AF22F32EB800BB6989 /* mapitagnames.cpp */; };
@@ -26,6 +29,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B023A10822FC803000A4BFBD /* StreamReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamReader.cpp; sourceTree = SOURCE_ROOT; };
+		B023A10922FC803000A4BFBD /* StreamReader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StreamReader.hpp; sourceTree = SOURCE_ROOT; };
+		B023A10A22FC803100A4BFBD /* mapiUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mapiUtils.cpp; sourceTree = SOURCE_ROOT; };
+		B023A10B22FC803100A4BFBD /* mapiUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mapiUtils.hpp; sourceTree = SOURCE_ROOT; };
+		B023A10C22FC803200A4BFBD /* StreamPropertyReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamPropertyReader.cpp; sourceTree = SOURCE_ROOT; };
+		B023A10D22FC803300A4BFBD /* StreamPropertyReader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StreamPropertyReader.hpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1222F08C2F0069EDAD /* pole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pole.cpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1322F08C2F0069EDAD /* msginfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msginfo.cpp; sourceTree = SOURCE_ROOT; };
 		B05ABA1422F08C2F0069EDAD /* pole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pole.h; sourceTree = SOURCE_ROOT; };
@@ -92,6 +101,12 @@
 		B0C4215022EF6E5A0007BA60 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B023A10A22FC803100A4BFBD /* mapiUtils.cpp */,
+				B023A10B22FC803100A4BFBD /* mapiUtils.hpp */,
+				B023A10C22FC803200A4BFBD /* StreamPropertyReader.cpp */,
+				B023A10D22FC803300A4BFBD /* StreamPropertyReader.hpp */,
+				B023A10822FC803000A4BFBD /* StreamReader.cpp */,
+				B023A10922FC803000A4BFBD /* StreamReader.hpp */,
 				B0E92E6A22F9B1400034B148 /* ms-oxprops.h */,
 				B05ABA1822F09B900069EDAD /* mapidefs.h */,
 				B094F03022F21B1A00C6E735 /* mapiExtraDefs.h */,
@@ -164,10 +179,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B023A10F22FC803300A4BFBD /* mapiUtils.cpp in Sources */,
 				B08B66B022F32EB800BB6989 /* mapitagnames.cpp in Sources */,
 				B05ABA1522F08C2F0069EDAD /* pole.cpp in Sources */,
+				B023A10E22FC803300A4BFBD /* StreamReader.cpp in Sources */,
 				B094F02F22F1ED5E00C6E735 /* MapiMessage.cpp in Sources */,
 				B05ABA1622F08C2F0069EDAD /* msginfo.cpp in Sources */,
+				B023A11022FC803300A4BFBD /* StreamPropertyReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,7 @@ EXES=msginfo poledump
 
 all: $(EXES)
 
-msginfo: msginfo.o pole.o MapiMessage.o mapitagnames.o
+msginfo: msginfo.o pole.o MapiMessage.o mapitagnames.o mapiUtils.o StreamReader.o StreamPropertyReader.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
 
 poledump: poledump.o pole.o
